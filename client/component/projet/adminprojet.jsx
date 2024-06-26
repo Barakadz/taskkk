@@ -26,7 +26,7 @@ const AdminProjet = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8800/api/projet/');
+      const response = await axios.get('https://task.groupe-hasnaoui.com/api/projet/');
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data: ', error);
@@ -122,7 +122,7 @@ const AdminProjet = () => {
                 dataDelete.splice(index, 1);
                 setData([...dataDelete]);
                 const id = oldData.id;
-                axios.delete(`http://localhost:8800/api/projet/${id}`)
+                axios.delete(`https://task.groupe-hasnaoui.com/api/projet/${id}`)
                   .then(response => {
                     toast.success(response.data);
                   })

@@ -51,7 +51,7 @@ export default function Login() {
 
  const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8800/api/directeur/');
+        const response = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);

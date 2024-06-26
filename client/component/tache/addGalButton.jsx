@@ -21,7 +21,7 @@ const AddGalButton = () => {
 
   const fetchOptionsProjet = async () => {
     try {
-      const response = await fetch('http://localhost:8800/api/projet/projetmail', {
+      const response = await fetch('https://task.groupe-hasnaoui.com/api/projet/projetmail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const AddGalButton = () => {
     const ParticipantAll = values.participant.map(item => item.value).join('-');
     const ProjetAll = values.projet.map(item => item.value).join('-');
 
-    const apiUrl = 'http://localhost:8800/api/tache/add';
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/tache/add';
     const requestData = {
       level: values.niveau,
 

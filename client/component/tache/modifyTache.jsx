@@ -67,7 +67,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
         const ParticipantAll = values.participant.map(item => item.value).join('-');
         const ChefProjetAll = values.chefProjet.map(item => item.value).join('-');
 
-        const apiUrl = `http://localhost:8800/api/projet/${id}`;
+        const apiUrl = `https://task.groupe-hasnaoui.com/api/projet/${id}`;
         const requestData = {
             titre_projet: values.titreProjet,
             description: values.description,

@@ -112,7 +112,7 @@ const AddGalButton = ( ) => {
     const ParticipantAll = values.participant.map(item => item.value).join('-');  
     const ChefProjetAll = values.chefProjet.map(item => item.value).join('-');  
 
-    const apiUrl = 'http://localhost:8800/api/projet/add';
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/projet/add';
     const requestData = {
       titre_projet: values.titreProjet,
        description: values.description,

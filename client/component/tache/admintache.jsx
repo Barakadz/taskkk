@@ -26,7 +26,7 @@ const AdminTache = () => {
       try {
         //https://www.ehp-hasnaoui.com/api/galerie/
        
-        const response = await axios.get('http://localhost:8800/api/tache/');  
+        const response = await axios.get('https://task.groupe-hasnaoui.com/api/tache/');  
         setData(response.data);
        } catch (error) {
         console.error('Error fetching data: ', error);
@@ -165,7 +165,7 @@ Descript={Description} id={idTache}
            const id=oldData.id;
            //axios.delete(`https://www.ehp-hasnaoui.com/api/galerie/${id}`)
 
-           axios.delete(`http://localhost:8800/api/tache/${id}`)
+           axios.delete(`https://task.groupe-hasnaoui.com/api/tache/${id}`)
 .then(response => {
 toast.success(response.data)
 })

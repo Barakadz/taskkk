@@ -47,7 +47,7 @@ const Side = () => {
 
       const zer = async () => {
         try {
-          const response = await fetch('http://localhost:8800/api/directeur/');
+          const response = await fetch('https://task.groupe-hasnaoui.com/api/directeur/');
           const responseData = await response.json();
           console.log(responseData)
           setData(responseData);
