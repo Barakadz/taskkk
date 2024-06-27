@@ -14,7 +14,8 @@ import { useSelector } from 'react-redux';
 
 const animatedComponents = makeAnimated();
 
-const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, filia, par }) => {
+const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, filia, par,mai }) => {
+ 
     const router = useRouter();
     const user = useSelector((state) => state.user);
 
@@ -54,7 +55,10 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         { value: 'DCG', label: 'DCG' },
         { value: 'DMC', label: 'DMC' },
     ];
-
+    const validationStatusOptions = [
+        { value: 'valide', label: 'Projet validé' },
+        { value: 'nonvalide', label: 'Projet non valide' },
+    ];
     const [optionsChef, setOptionsChef] = useState([]);
     const [optionsPartic, setOptionsPartic] = useState([]);
 
@@ -84,6 +88,8 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         filiale: filia ? filia.split('-').map(f => ({ value: removeQuotesAndBackslashes(f), label: removeQuotesAndBackslashes(f) })) : [],
         participant: par ? par.split('-').map(p => ({ value: removeQuotesAndBackslashes(p), label: removeQuotesAndBackslashes(p) })) : [],
        description: descri ? descri.replace(/"/g, '') : '',
+       validationStatus: '', // Add this line for the validation status
+reason:'',
     };
 
     const validationSchema = Yup.object().shape({
@@ -97,6 +103,10 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         filiale: Yup.array().min(1, 'Il faut remplir votre filiale de Projet').required('Il faut remplir votre filiale de Projet'),
         participant: Yup.array().min(1, 'Il faut remplir votre participant de Projet').required('Il faut remplir votre participant de Projet'),
         description: Yup.string().required('Il faut remplir votre description de Projet'),
+         validationStatus: Yup.array().test('unique', 'Vous ne pouvez sélectionner qu\'un seul etat', (value) => value.length <= 1)
+        .min(1, 'Il faut remplir votre etat de validation')
+        .required('Il faut remplir votre etat de validation'),
+        reason:Yup.string().required('Il faut remplir votre Raison de validation'),
     });
 
     const onSubmit = (values, { resetForm }) => {
@@ -104,20 +114,49 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         const FilialeAll = values.filiale.map(item => item.value).join('-');
         const ParticipantAll = values.participant.map(item => item.value).join('-');
         const ChefProjetAll = values.chefProjet.map(item => item.value).join('-');
+        const valAll = values.validationStatus.map(item => item.value).join('-');
 
-        const apiUrl = `https://task.groupe-hasnaoui.com/api/projet/${id}`;
+
+        
+        const apiUrll = 'https://www.groupe-hasnaoui.com/mailprojet.php';
+        const requestDataa = {
+         Email: mai.replace(/"/g, '') ,
+        
+         Nom:user.firstName,
+         Prenom:user.lastName
+        };
+        
+        axios.post(apiUrll, requestDataa, {
+         headers: {
+             'Content-Type': 'application/x-www-form-urlencoded'
+         }})
+          .then(response => {
+           //  console.log('POST request successful');
+          // console.log('Response data:', response.data);
+          })
+          .catch(error => {
+           console.error('An error occurred:', error);
+          });
+            
+
+
+
+
+
+
+
+        const apiUrl = `https://task.groupe-hasnaoui.com/api/projetvalide/${id}`;
         const requestData = {
-            titre_projet: values.titreProjet,
-            description: values.description,
-            chef_projet: ChefProjetAll,
-            date_debut: values.dateDebut,
-            date_fin: values.dateFin,
-            departement: DirectionAll,
-            filiale: FilialeAll,
-            participant: ParticipantAll,
+             
+            validr: valAll,
+            cause: values.reason,
+             
            
         };
 
+       
+       
+       
         fetch(apiUrl, {
             method: 'PUT',
             headers: {
@@ -157,7 +196,7 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         }
     };
 
-    const CustomSelect = ({ field, form, options, isMulti }) => (
+    const CustomSelect = ({ field, form, options, isMulti ,isDisabled}) => (
         <Select
             {...field}
             options={options}
@@ -165,7 +204,8 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
             components={animatedComponents}
             onChange={option => form.setFieldValue(field.name, option)}
             value={field.value}
-        />
+            isDisabled={isDisabled} // Pass the isDisabled prop to Select
+                    />
     );
 
     return (
@@ -184,44 +224,58 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
                                         <Form className="row g-3">
                                             <div className="col-lg-4">
                                                 <label htmlFor="titreProjet" className="form-label">Titre Projet <b className='text-danger'>*</b><GoProjectRoadmap size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field type="text" className="form-control" id="titreProjet" name="titreProjet" />
+                                                <Field type="text" className="form-control" id="titreProjet" name="titreProjet" disabled/>
                                                 <ErrorMessage name="titreProjet" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="dateDebut" className="form-label">Date Début <b className='text-danger'>*</b> <MdOutlineDateRange size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field type="date" className="form-control" id="dateDebut" name="dateDebut" />
+                                                <Field type="date" className="form-control" id="dateDebut" name="dateDebut" disabled/>
                                                 <ErrorMessage name="dateDebut" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="dateFin" className="form-label">Date Fin <b className='text-danger'>*</b><MdOutlineDateRange size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field type="date" className="form-control" id="dateFin" name="dateFin" />
+                                                <Field type="date" className="form-control" id="dateFin" name="dateFin" disabled/>
                                                 <ErrorMessage name="dateFin" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="chefProjet" className="form-label">Chef Projet <b className='text-danger'>*</b></label>
-                                                <Field name="chefProjet" options={optionsChef} component={CustomSelect} isMulti={true} />
+                                                <Field name="chefProjet" options={optionsChef} component={CustomSelect} isMulti={true}  isDisabled={true}    />
                                                 <ErrorMessage name="chefProjet" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="direction" className="form-label">Direction <b className='text-danger'>*</b></label>
-                                                <Field name="direction" options={optionsDirection} component={CustomSelect} isMulti={true} />
+                                                <Field name="direction" options={optionsDirection} component={CustomSelect} isMulti={true}  isDisabled={true}    />
                                                 <ErrorMessage name="direction" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="filiale" className="form-label">Filiale <b className='text-danger'>*</b></label>
-                                                <Field name="filiale" options={optionsFiliale} component={CustomSelect} isMulti={true} />
+                                                <Field name="filiale" options={optionsFiliale} component={CustomSelect} isMulti={true}  isDisabled={true}    />
                                                 <ErrorMessage name="filiale" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-l-12">
                                                 <label htmlFor="participant" className="form-label">Participant <b className='text-danger'>*</b></label>
-                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true} />
+                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true}   isDisabled={true}   
+                                                />
                                                 <ErrorMessage name="participant" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-md-12">
                                                 <label htmlFor="description" className="form-label">Description <b className='text-danger'>*</b><TbFileDescription size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field as="textarea" className="form-control" id="description" name="description" />
+                                                <Field as="textarea" className="form-control" id="description" name="description" disabled/>
                                                 <ErrorMessage name="description" component="div" className="text-danger" />
                                             </div>
+
+                                            <div className="col-md-12">
+                                                <label htmlFor="validationStatus" className="form-label">Validation <b className='text-danger'>*</b><TbFileDescription size={30} style={{ marginLeft: "10px" }} /></label>
+                                                <Field name="validationStatus" options={validationStatusOptions} component={CustomSelect} isMulti={true}isDisabled={false} />
+                                                <ErrorMessage name="validationStatus" component="div" className="text-danger" />
+                                            </div>
+                                            <div className="col-md-12">
+                                                <label htmlFor="reason" className="form-label">Raison <b className='text-danger'>*</b><TbFileDescription size={30} style={{ marginLeft: "10px" }} /></label>
+                                                <Field as="textarea" className="form-control" id="reason" name="reason"  />
+                                                <ErrorMessage name="reason" component="div" className="text-danger" />
+                                            </div>
+
+
                                             <div className="modal-footer">
                                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseModalClick}>Fermer</button>
                                                 <button type="submit" className="btn btn-primary">Sauvegardé</button>

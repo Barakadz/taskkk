@@ -11,10 +11,13 @@ import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useRouter } from 'next/router';
 import { FaRegStar } from "react-icons/fa";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 const animatedComponents = makeAnimated();
 
 const AddGalButton = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const router = useRouter();
   const [optionsPartic, setOptionsPartic] = useState([]);
   const [optionsProjet, setOptionsProjet] = useState([]);
@@ -96,6 +99,12 @@ const AddGalButton = () => {
     const ParticipantAll = values.participant.map(item => item.value).join('-');
     const ProjetAll = values.projet.map(item => item.value).join('-');
 
+
+
+
+
+
+    
     const apiUrl = 'https://task.groupe-hasnaoui.com/api/tache/add';
     const requestData = {
       level: values.niveau,
@@ -107,7 +116,9 @@ const AddGalButton = () => {
       date_fin: values.dateFin,
       equipe: ParticipantAll,
       tache: '0',
-      mail: 'ibrahim.baraka@groupe-hasnaoui.com'
+      mail: user.mail,
+      projet:ProjetAll,
+      departement_user:user.department
     };
 
     fetch(apiUrl, {
@@ -125,10 +136,10 @@ const AddGalButton = () => {
       })
       .then(data => {
         toast.success('La Tache à été bien Ajouté');
-        setTimeout(() => {
-          window.location.href = '';
-        }, 3000);
-      })
+        resetForm(initialValues); // Reset form fields
+
+        window.location.href = '';
+       })
       .catch(error => {
         toast.error(`An error occurred: ${error.message}`);
       });

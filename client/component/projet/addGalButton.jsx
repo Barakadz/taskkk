@@ -141,10 +141,10 @@ const AddGalButton = ( ) => {
       })
       .then(data => {
         toast.success('Le Projet à été bien Ajouté');
-             router.push('/projet');
 
-   //      resetForm(initialValues); // Reset form fields
-        })
+      resetForm(initialValues); // Reset form fields
+           window.location.href='';
+ })
       .catch(error => {
         toast.error('An error occurred:', error);
       });

@@ -37,7 +37,7 @@ export const AddContact = (req, res) => {
       req.body.problem,
       req.body.description,
       req.body.mail,
-      req.body.date,
+ 
       Date
 
      ];

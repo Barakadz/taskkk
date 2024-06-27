@@ -31,7 +31,7 @@ export const AddProjet = (req, res) => {
     const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
   
     const q =
-      "INSERT INTO `projet`( `titre_projet`, `description`, `chef_projet`, `date_debut`, `date_fin`, `departement`, `filiale`, `participant`, `tache`, `mail`, `departement_user`, `validation`, `date`)   VALUE (?)";
+      "INSERT INTO `projet`( `titre_projet`, `description`, `chef_projet`, `date_debut`, `date_fin`, `departement`, `filiale`, `participant`, `tache`, `mail`, `departement_user`, `validation`, `validation_dg`, `date`)   VALUE (?)";
 
     const values = [
       req.body.titre_projet,
@@ -46,6 +46,7 @@ export const AddProjet = (req, res) => {
 
       req.body.mail,
       req.body.departement_user,
+'en cours',
 
 'en cours',
 Date

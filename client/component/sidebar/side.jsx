@@ -8,6 +8,7 @@ import { GrValidate } from "react-icons/gr";
 import { TiNews } from "react-icons/ti";
 import axios from 'axios';
 import { setUser } from '../redux/userSlice'; // Adjust the import path to your actual user slice
+import { FaUser } from "react-icons/fa";
 
 
 const Side = () => {
@@ -18,9 +19,33 @@ const Side = () => {
 
 
   const [data, setData] = useState([]);
-  const [userInfoExists, setUserInfoExists] = useState(false); // State to track user info existence
+ 
+  
+
+
+
+
+
+   const [userEmailExists, setUserEmailExists] = useState(false);
 
  
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem('mailtask');
+    if (data.length > 0) {
+      const exists = data.some(item => item.mail === userEmail);
+      setUserEmailExists(exists);
+    }
+  }, [data]);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,30 +71,20 @@ const Side = () => {
 
 
       const zer = async () => {
-        try {
-          const response = await fetch('https://task.groupe-hasnaoui.com/api/directeur/');
-          const responseData = await response.json();
-          console.log(responseData)
-          setData(responseData);
-          const userEmail = localStorage.getItem('mailtask');
-          if (userEmail && response.data.some(user => user.mail === userEmail)) {
-            setUserInfoExists(true); // Set state if user email exists in data
-          }
-        } catch (error) {
-          console.error('Error fetching data: ', error);
-        }
-      };
+     
+             try {
+              const response = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
+              setData(response.data);
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+       
+        
   
-      zer(); // Fetch data when component mounts
-      console.log(data)  
-        console.log(userInfoExists)
+      zer();  
+    
   
- 
-
-
-
-
-
 
       const authHeader = 'Basic ' + btoa(`${mail}:${password}`);
       const url = 'https://api.ldap.groupe-hasnaoui.com/newtask/auth';
@@ -115,15 +130,49 @@ const Side = () => {
         <header>
           <a href="#">Task Manager ver <b>1.0.0</b></a>
         </header>
-        <ul className="nav">
-          <Link legacyBehavior href="/admin">
-            <li className={router.pathname === '/admin' ? 'act ' : ''}>
+        {userEmailExists ? (
+                    <ul className="nav">
+   <Link legacyBehavior href="/validationprojet">
+        <li className={router.pathname === '/validationprojet' ? 'act ' : ''}>
+          <div className="flex flex-row">
+            <FaUser             color="white" fontSize={20} className="mr-4" />
+            &nbsp; &nbsp;validation des projet
+          </div>
+        </li>
+      </Link>
+       
+
+       <Link legacyBehavior href="/validationtache">
+       <li className={router.pathname === '/validationtache' ? 'act ' : ''}>
+         <div className="flex flex-row">
+           <FaUser             color="white" fontSize={20} className="mr-4" />
+           &nbsp; &nbsp;validation des tache
+         </div>
+       </li>
+     </Link>
+       
+     <Link legacyBehavior href="/evaluation">
+            <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
               <div className="flex flex-row">
                 <GrValidate color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;elements
+                &nbsp; &nbsp;Evaluation
               </div>
             </li>
           </Link>
+          <Link legacyBehavior href="/contact">
+            <li className={router.pathname === '/contact' ? 'act ' : ''}>
+              <div className="flex flex-row">
+                <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                &nbsp; &nbsp; Contacter la DSI
+              </div>
+            </li>
+          </Link>
+     
+     </ul>
+      ) : (
+        
+          <ul className="nav">
+         
           <Link legacyBehavior href="/admin">
             <li className={router.pathname === '/admin' ? 'act ' : ''}>
               <div className="flex flex-row">
@@ -148,14 +197,14 @@ const Side = () => {
               </div>
             </li>
           </Link>
-          <Link legacyBehavior href="/admin">
+        {/*  <Link legacyBehavior href="/admin">
             <li className={router.pathname === '/admin' ? 'act ' : ''}>
               <div className="flex flex-row">
                 <GrValidate color="white" fontSize={20} className="mr-4" />
                 &nbsp; &nbsp;Réclamation
               </div>
             </li>
-          </Link>
+          </Link>*/ }
           <Link legacyBehavior href="/evaluation">
             <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
               <div className="flex flex-row">
@@ -172,7 +221,7 @@ const Side = () => {
               </div>
             </li>
           </Link>
-        </ul>
+        </ul> )}
       </div>
       <div id=" ">
         <nav className="">

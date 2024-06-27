@@ -3,13 +3,12 @@ import MaterialTable from 'material-table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import AddGalButton from './addGalButton';
- import Tour from '../tour';
+  import Tour from '../tour';
 import ModifyProject from './modifyProject';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 
-const AdminProjet = () => {
+const AdminProjetVal = () => {
   const [titreProject, setTitreProject] = useState('');
   const [descriptionProject, setdescriptionProject] = useState('');
   const [chefProject, setChefProject] = useState('');
@@ -19,6 +18,7 @@ const AdminProjet = () => {
   const [Filiale, setFiliale] = useState('');
   const [Participant, setParticipant] = useState('');
   const [IdPro, setIdPro] = useState('');
+  const [mailPro, setmailPro] = useState('');
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -31,10 +31,10 @@ const AdminProjet = () => {
     let mailts = localStorage.getItem('mailtask');
 
     const requestData = {
-      mail:mailts
+      dep:user.department
     };
     
-    axios.post('https://task.groupe-hasnaoui.com/api/projet/projetmail/', requestData, {
+    axios.post('https://task.groupe-hasnaoui.com/api/projetvalide/projetdep/', requestData, {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -63,6 +63,8 @@ const AdminProjet = () => {
     { field: 'titre_projet', title: 'Titre de Projet' },
     { field: 'date_debut', title: 'Date de Début' },
     { field: 'date_fin', title: 'Date de Fin' },
+    { field: 'mail', title: 'Utilisateur' },
+
      { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' }  },
     { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' }  },
 
@@ -77,7 +79,7 @@ const AdminProjet = () => {
     }
   };
 
-  const Modiyprojet = (id, titre_projet, description,chef_projet, date_debut, date_fin,departement, filiale, participant) => {
+  const Modiyprojet = (id, titre_projet, description,chef_projet, date_debut, date_fin,departement, filiale, participant,mail) => {
     setTitreProject(titre_projet);
     setdescriptionProject(description);
     setChefProject(chef_projet);
@@ -87,7 +89,8 @@ const AdminProjet = () => {
     setFiliale(filiale);
     setParticipant(participant);
     setIdPro(id);
-    
+    setmailPro(mail);
+
     const modal = document.getElementById('exampleModall');
     if (modal) {
       modal.classList.add('show');
@@ -97,8 +100,8 @@ const AdminProjet = () => {
 
   return (
     <>
-        <AddGalButton /> <ModifyProject  id={IdPro}   tire_projet={titreProject}   descri={descriptionProject}   chefp={chefProject} 
-       dadebut={DateDebut}   dafin={DateFin}dep={Departement}   filia={Filiale} par={Participant}  
+      <ModifyProject  id={IdPro}   tire_projet={titreProject}   descri={descriptionProject}   chefp={chefProject} 
+       dadebut={DateDebut}   dafin={DateFin}dep={Departement}   filia={Filiale} par={Participant} mai={mailPro} 
        />   
        <ToastContainer />
       <MaterialTable
@@ -125,34 +128,15 @@ const AdminProjet = () => {
           },
           {
             icon: 'edit',
-            tooltip: 'Modifier Projet',
+            tooltip: 'validation Projet',
             isFreeAction: false,
             onClick: (event, rowData) => Modiyprojet(JSON.stringify(rowData.id), JSON.stringify(rowData.titre_projet), JSON.stringify(rowData.description),
             JSON.stringify(rowData.chef_projet), JSON.stringify(rowData.date_debut), JSON.stringify(rowData.date_fin),
-            JSON.stringify(rowData.departement), JSON.stringify(rowData.filiale), JSON.stringify(rowData.participant)
+            JSON.stringify(rowData.departement), JSON.stringify(rowData.filiale), JSON.stringify(rowData.participant), JSON.stringify(rowData.mail)
           ),
           }
         ]}
-        editable={{
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                const dataDelete = [...data];
-                const index = oldData.tableData.id;
-                dataDelete.splice(index, 1);
-                setData([...dataDelete]);
-                const id = oldData.id;
-                axios.delete(`https://task.groupe-hasnaoui.com/api/projet/${id}`)
-                  .then(response => {
-                    toast.success(response.data);
-                  })
-                  .catch(error => {
-                    toast.error(error);
-                  });
-                resolve();
-              }, 1000);
-            }),
-        }}
+        
         detailPanel={rowData => (
           <div style={{ marginLeft: '25px' }}>
             <p><b>Description :</b></p>
@@ -227,4 +211,4 @@ const AdminProjet = () => {
   );
 };
 
-export default AdminProjet;
+export default AdminProjetVal;

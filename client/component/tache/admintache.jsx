@@ -23,14 +23,24 @@ const AdminTache = () => {
   const [data, setData] = useState([]);
 
  const fetchData = async () => {
-      try {
-        //https://www.ehp-hasnaoui.com/api/galerie/
-       
-        const response = await axios.get('https://task.groupe-hasnaoui.com/api/tache/');  
-        setData(response.data);
-       } catch (error) {
-        console.error('Error fetching data: ', error);
-       }
+  let mailts = localStorage.getItem('mailtask');
+
+  const requestData = {
+    mail:mailts
+  };
+  
+  axios.post('https://task.groupe-hasnaoui.com/api/tache/tachetmail/', requestData, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => {
+    setData(response.data);
+  })
+  .catch(error => {
+    console.log('There was an error!', error);
+  });
+
     };
   useEffect(() => {
    
@@ -46,9 +56,9 @@ const AdminTache = () => {
    
     { field: 'date_debut', title: 'Date de Début' },
     { field: 'date_fin', title: 'Date de Fin' },
-    { field: 'etat', title: 'Etat' },
- 
-    { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#C4D600' }  },
+  
+    { field: 'validation', title: 'Validation responsable', cellStyle: { backgroundColor: '#D6FA8C' }  },
+    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' }  },
 
     
    ];
@@ -139,7 +149,7 @@ Descript={Description} id={idTache}
 
     detailPanel={rowData => {
       return (<>
-       <p><b>Description :</b></p> 
+      <div className="mx-4"><p><b>Description :</b></p> 
        <div
           dangerouslySetInnerHTML={{ __html: rowData.description }}
         />
@@ -147,6 +157,11 @@ Descript={Description} id={idTache}
        <div
           dangerouslySetInnerHTML={{ __html: rowData.equipe }}
         />
+         <p><b>Etat d'avancement :</b></p> 
+       <div
+          dangerouslySetInnerHTML={{ __html: rowData.etat }}
+        /></div>
+       
 </>
       )
     }}

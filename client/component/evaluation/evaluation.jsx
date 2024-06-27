@@ -1,9 +1,14 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Evaluation = () => {
-  const initialValues = {
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);  const initialValues = {
     rating: '',
     commentaires: '',
     suggestions: ''
@@ -16,9 +21,44 @@ const Evaluation = () => {
   });
 
   const handleSubmit = (values, { resetForm }) => {
-    // Here you can handle the form submission logic, e.g., send data to an API
-    console.log(values); // For demonstration, logging form values to console
-    resetForm(); // Reset the form after submission
+
+
+
+
+
+
+    
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/evaluation/add';
+    const requestData = {
+      note:values.rating,
+      commentaire:values.commentaires,
+      suggestion:values.suggestions,
+      mail:user.mail
+    };
+
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+ toast.success('Evaluation à été bien ajouter')
+ resetForm(initialValues); // Reset form fields
+
+        })
+      .catch(error => {
+       });
+  
+
+ 
   };
 
   return (
@@ -57,7 +97,8 @@ const Evaluation = () => {
               )}
             </Formik>
           </div>
- 
+          <ToastContainer />
+
     </>
   );
 };

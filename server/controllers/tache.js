@@ -31,7 +31,7 @@ export const AddTache = (req, res) => {
     const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
   
     const q =
-      "INSERT INTO `tache`( `titre_tache`,`level`,  `description`, `equipe`, `date_debut`, `date_fin`, `etat`, `mail`, `validation`, `date`)   VALUE (?)";
+      "INSERT INTO `tache`( `titre_tache`,`level`,  `description`, `equipe`, `date_debut`, `date_fin`, `etat`, `mail`,`projet`, `departement_user`,`validation`, `validation_dg`, `date`)   VALUE (?)";
 
     const values = [
       req.body.titre_tache,
@@ -43,7 +43,12 @@ export const AddTache = (req, res) => {
       req.body.date_fin,
       req.body.etat,
       req.body.mail,
+      req.body.projet,
+      req.body.departement_user,
+
       'en cours',
+      'en cours',
+
 Date
 
      ];
@@ -162,12 +167,11 @@ export const UpdateTache = (req, res) => {
     }
 
   
-  
+ 
     
-    
-    const q = "UPDATE `tache` SET `titre_tache` = ?,   `level` = ? , `description` = ? , `equipe` = ? , `date_debut` = ? , `date_fin` = ? , `etat` = ? , `file` = ?     WHERE id = ?";
+    const q = "UPDATE `tache` SET `titre_tache` = ?,   `description` = ? , `equipe` = ? , `date_debut` = ? , `date_fin` = ? , `etat` = ? , `projet` = ? , `level` = ?     WHERE id = ?";
   
-    db.query(q,[req.body.titre_tache,req.body.level,req.body.description,req.body.equipe,req.body.date_debut,req.body.date_fin,req.body.etat,req.body.file,,id], (err, userData) => {
+    db.query(q,[req.body.titre_tache,req.body.description,req.body.equipe,req.body.date_debut,req.body.date_fin,req.body.etat,req.body.projett,req.body.level,id], (err, userData) => {
       if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({ error: 'Database error' });
