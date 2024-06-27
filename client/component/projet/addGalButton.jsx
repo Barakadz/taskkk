@@ -141,9 +141,12 @@ const AddGalButton = ( ) => {
       })
       .then(data => {
         toast.success('Le Projet à été bien Ajouté');
-    window.location.href=''
 
       resetForm(initialValues); // Reset form fields
+      setTimeout(() => {
+        window.location.href=''
+
+      }, 3000);
         })
       .catch(error => {
         toast.error('An error occurred:', error);

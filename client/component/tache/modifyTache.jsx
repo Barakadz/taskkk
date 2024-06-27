@@ -42,7 +42,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ mail: 'ibrahim.baraka@groupe-hasnaoui.com' }),
+                body: JSON.stringify({ mail: user.mail }),
             });
 
             if (!response.ok) {
@@ -124,8 +124,10 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
         .then(data => {
             toast.success('Tâche modifiée avec succès');
             resetForm();
-            window.location.href = ''; // Redirect or refresh logic
-        })
+            setTimeout(() => {
+                window.location.href=''
+        
+              }, 3000);        })
         .catch(error => {
             toast.error(`Erreur lors de la modification de la tâche: ${error.message}`);
         });

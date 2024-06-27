@@ -134,8 +134,10 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
             .then(data => {
                 toast.success('Le Projet à été bien Modifié');
                 resetForm(initialValues); // Reset form fields
-                window.location.href='';
-                        })
+                setTimeout(() => {
+                    window.location.href=''
+            
+                  }, 3000);                        })
             .catch(error => {
                 toast.error('An error occurred:', error);
             });

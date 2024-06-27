@@ -138,8 +138,10 @@ const AddGalButton = () => {
         toast.success('La Tache à été bien Ajouté');
         resetForm(initialValues); // Reset form fields
 
-        window.location.href = '';
-       })
+        setTimeout(() => {
+          window.location.href=''
+  
+        }, 3000);       })
       .catch(error => {
         toast.error(`An error occurred: ${error.message}`);
       });
