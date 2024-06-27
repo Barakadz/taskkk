@@ -29,11 +29,10 @@ export const AddProjet = (req, res) => {
    // const hashedPassword = bcrypt.hashSync(req.body.Password, salt);
      const currentDate = moment();
     const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
-  
+   
     const q =
-      "INSERT INTO `projet`( `titre_projet`, `description`, `chef_projet`, `date_debut`, `date_fin`, `departement`, `filiale`, `participant`, `tache`, `mail`, `departement_user`, `validation`, `validation_dg`, `date`)   VALUE (?)";
-
-    const values = [
+      "INSERT INTO `projet`( `titre_projet`, `description`, `chef_projet`, `date_debut`, `date_fin`, `departement`, `filiale`, `participant`, `tache`, `mail`, `departement_user`, `validation`, `validation_dg`, `date`, `cause_responsable`, `cause_directeur`)   VALUE (?)";
+     const values = [
       req.body.titre_projet,
        req.body.description,
       req.body.chefprojetgroupe,
@@ -49,7 +48,10 @@ export const AddProjet = (req, res) => {
 'en cours',
 
 'en cours',
-Date
+Date,
+'en cours',
+
+'en cours',
 
      ];
 

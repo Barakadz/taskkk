@@ -29,7 +29,7 @@ const AddGalButton = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ mail: 'ibrahim.baraka@groupe-hasnaoui.com' }),
+        body: JSON.stringify({ mail: user.mail}),
       });
 
       if (!response.ok) {
@@ -52,7 +52,7 @@ const AddGalButton = () => {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const response = await axios.get('https://api.ldap.groupe-hasnaoui.com/get/users/group/GSHA?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJUb2tlbiI6IkZvciBEU0kiLCJVc2VybmFtZSI6ImFjaG91cl9hciJ9.aMy1LUzKa6StDvQUX54pIvmjRwu85Fd88o-ldQhyWnE');
+        const response = await axios.get('https://api.ldap.groupe-hasnaoui.com/get/users/group/GSHA-NEW?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJUb2tlbiI6IkZvciBEU0kiLCJVc2VybmFtZSI6ImFjaG91cl9hciJ9.aMy1LUzKa6StDvQUX54pIvmjRwu85Fd88o-ldQhyWnE');
         const options = response.data.members.map(member => ({
           value: member,
           label: member

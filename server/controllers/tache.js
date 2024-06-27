@@ -29,9 +29,8 @@ export const AddTache = (req, res) => {
    // const hashedPassword = bcrypt.hashSync(req.body.Password, salt);
      const currentDate = moment();
     const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
-  
-    const q =
-      "INSERT INTO `tache`( `titre_tache`,`level`,  `description`, `equipe`, `date_debut`, `date_fin`, `etat`, `mail`,`projet`, `departement_user`,`validation`, `validation_dg`, `date`)   VALUE (?)";
+     const q =
+      "INSERT INTO `tache`( `titre_tache`,`level`,  `description`, `equipe`, `date_debut`, `date_fin`, `etat`, `mail`,`projet`, `departement_user`,`validation`, `validation_dg`, `date`, `cause_responsable`, `cause_dg`)   VALUE (?)";
 
     const values = [
       req.body.titre_tache,
@@ -49,7 +48,9 @@ export const AddTache = (req, res) => {
       'en cours',
       'en cours',
 
-Date
+Date,
+'en cours',
+'en cours'
 
      ];
 
