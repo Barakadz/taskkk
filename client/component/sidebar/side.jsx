@@ -149,14 +149,7 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/contact">
-                <li className={router.pathname === '/contact' ? 'act ' : ''}>
-                  <div className="flex flex-row">
-                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                    &nbsp; &nbsp; Réclamation
-                  </div>
-                </li>
-              </Link>
+           
             </>
             
           )}
@@ -257,14 +250,7 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/contact">
-                <li className={router.pathname === '/contact' ? 'act ' : ''}>
-                  <div className="flex flex-row">
-                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                    &nbsp; &nbsp; Réclamation
-                  </div>
-                </li>
-              </Link>
+           
             </>
           )}
         </ul>
