@@ -2,90 +2,65 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegUserCircle, FaUser } from "react-icons/fa";
 import { AiFillProject, AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { GrValidate } from "react-icons/gr";
 import { TiNews } from "react-icons/ti";
 import axios from 'axios';
 import { setUser } from '../redux/userSlice'; // Adjust the import path to your actual user slice
-import { FaUser } from "react-icons/fa";
-
 
 const Side = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
+  const [directorsEmails, setDirectorsEmails] = useState([]);
+  const [dgEmails, setDgEmails] = useState([]);
 
-
-  const [data, setData] = useState([]);
- 
-  
-
-
-
-
-
-   const [userEmailExists, setUserEmailExists] = useState(false);
-
- 
+  const [userEmailExists, setUserEmailExists] = useState(false);
+  const [userEmailExistss, setUserEmailExistss] = useState(false);
+  const [userEmailDg, setUserEmailDg] = useState(false);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem('mailtask');
-    if (data.length > 0) {
-      const exists = data.some(item => item.mail === userEmail);
+    const userEmail = user.mail;
+    if (dgEmails.length > 0) {
+      const exists = dgEmails.some(email => email === userEmail);
+      setUserEmailDg(exists);
+    }
+  }, [dgEmails, user.mail]);
+
+  useEffect(() => {
+    const userEmail = user.mail;
+    if (directorsEmails.length > 0) {
+      const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
     }
-  }, [data]);
+  }, [directorsEmails, user.mail]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
+        setDirectorsEmails(directeurResponse.data.map(directeur => directeur.mail));
+
+        const userEmailDg = await axios.get('https://task.groupe-hasnaoui.com/api/dg/');
+        setDgEmails(userEmailDg.data.map(directeur => directeur.mail));
 
 
+        const rhResponse = await axios.get('https://task.groupe-hasnaoui.com/api/rh/rh');
+        setUserEmailExistss(rhResponse.data.some(item => item.mail === user.mail));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    fetchData();
+  }, [user.mail]);
 
   useEffect(() => {
     const mail = localStorage.getItem('mailtask');
     const password = localStorage.getItem('passwordtask');
 
     if (mail && password) {
-
-
-      const zer = async () => {
-     
-             try {
-              const response = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
-              setData(response.data);
-            } catch (error) {
-              console.error('Error fetching data:', error);
-            }
-          };
-       
-        
-  
-      zer();  
-    
-  
-
       const authHeader = 'Basic ' + btoa(`${mail}:${password}`);
       const url = 'https://api.ldap.groupe-hasnaoui.com/newtask/auth';
 
@@ -121,109 +96,180 @@ const Side = () => {
     } else {
       router.push('/login');
     }
-  }, []);
+  }, [dispatch, router]);
 
- 
   return (
     <>
       <div id="sidebar">
         <header>
           <a href="#">Task Manager ver <b>1.0.0</b></a>
         </header>
-        {userEmailExists ? (
-                    <ul className="nav">
-   <Link legacyBehavior href="/validationprojet">
-        <li className={router.pathname === '/validationprojet' ? 'act ' : ''}>
-          <div className="flex flex-row">
-            <FaUser             color="white" fontSize={20} className="mr-4" />
-            &nbsp; &nbsp;validation des projet
-          </div>
-        </li>
-      </Link>
-       
-
-       <Link legacyBehavior href="/validationtache">
-       <li className={router.pathname === '/validationtache' ? 'act ' : ''}>
-         <div className="flex flex-row">
-           <FaUser             color="white" fontSize={20} className="mr-4" />
-           &nbsp; &nbsp;validation des tache
-         </div>
-       </li>
-     </Link>
-       
-     <Link legacyBehavior href="/evaluation">
-            <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
-              <div className="flex flex-row">
-                <GrValidate color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;Evaluation
-              </div>
-            </li>
-          </Link>
-          <Link legacyBehavior href="/contact">
-            <li className={router.pathname === '/contact' ? 'act ' : ''}>
-              <div className="flex flex-row">
-                <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                &nbsp; &nbsp; Contacter la DSI
-              </div>
-            </li>
-          </Link>
-     
-     </ul>
-      ) : (
+        <ul className="nav">
+          {userEmailExistss && (
+            <>
+             <Link legacyBehavior href="/employe@2222">
+             <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
+               <div className="flex flex-row">
+                 <GrValidate color="white" fontSize={20} className="mr-4" />
+                 &nbsp; &nbsp;Employé
+               </div>
+             </li>
+           </Link>
         
-          <ul className="nav">
-         
-          <Link legacyBehavior href="/admin">
-            <li className={router.pathname === '/admin' ? 'act ' : ''}>
-              <div className="flex flex-row">
-                <AiOutlineFundProjectionScreen color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;Dashboard
-              </div>
-            </li>
-          </Link>
-          <Link legacyBehavior href="/projet">
-            <li className={router.pathname === '/projet' ? 'act projet-step' : 'projet-step'}>
-              <div className="flex flex-row">
-                <AiFillProject color="white" fontSize={20} className="mr-4 projet-step" />
-                &nbsp; &nbsp;Les Projets
-              </div>
-            </li>
-          </Link>
-          <Link legacyBehavior href="/tache">
-            <li className={router.pathname === '/tache' ? 'act ' : ''}>
-              <div className="flex flex-row">
-                <TiNews color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;Les Taches
-              </div>
-            </li>
-          </Link>
-        {/*  <Link legacyBehavior href="/admin">
-            <li className={router.pathname === '/admin' ? 'act ' : ''}>
-              <div className="flex flex-row">
-                <GrValidate color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;Réclamation
-              </div>
-            </li>
-          </Link>*/ }
-          <Link legacyBehavior href="/evaluation">
-            <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
-              <div className="flex flex-row">
-                <GrValidate color="white" fontSize={20} className="mr-4" />
-                &nbsp; &nbsp;Evaluation
-              </div>
-            </li>
-          </Link>
-          <Link legacyBehavior href="/contact">
-            <li className={router.pathname === '/contact' ? 'act ' : ''}>
-              <div className="flex flex-row">
-                <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                &nbsp; &nbsp; Contacter la DSI
-              </div>
-            </li>
-          </Link>
-        </ul> )}
+              <Link legacyBehavior href="/projet">
+                <li className={router.pathname === '/projet' ? 'act projet-step' : 'projet-step'}>
+                  <div className="flex flex-row">
+                    <AiFillProject color="white" fontSize={20} className="mr-4 projet-step" />
+                    &nbsp; &nbsp;Les Projets
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/tache">
+                <li className={router.pathname === '/tache' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <TiNews color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Les Taches
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/evaluation">
+                <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Evaluation
+                  </div>
+                </li>
+              </Link>
+             
+              <Link legacyBehavior href="/contact">
+                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                    &nbsp; &nbsp; Contacter la DSI
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/contact">
+                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                    &nbsp; &nbsp; Réclamation
+                  </div>
+                </li>
+              </Link>
+            </>
+            
+          )}
+
+{userEmailDg && (
+  <>
+   <Link legacyBehavior href="/validationtousprojet">
+    <li className={router.pathname === '/validationtousprojet' ? 'act ' : ''}>
+      <div className="flex flex-row">
+        <FaUser color="white" fontSize={20} className="mr-4" />
+        &nbsp; &nbsp;Validation des Projets GSH
       </div>
-      <div id=" ">
+    </li>
+  </Link>
+  </>
+ 
+) }
+          {userEmailExists && (
+            <>
+         
+              <Link legacyBehavior href="/validationprojet">
+                <li className={router.pathname === '/validationprojet' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <FaUser color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;validation des projet
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/validationtache">
+                <li className={router.pathname === '/validationtache' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <FaUser color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;validation des tache
+                  </div>
+                </li>
+              </Link>
+            
+
+              <Link legacyBehavior href="/evaluation">
+                <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Evaluation
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/contact">
+                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                    &nbsp; &nbsp; Contacter la DSI
+                  </div>
+                </li>
+              </Link>
+            </>
+          )}
+          {!userEmailExists && !userEmailExistss && (
+            <>
+             
+              <Link legacyBehavior href="">
+                <li className={router.pathname === '' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <AiOutlineFundProjectionScreen color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Dashboard
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/projet">
+                <li className={router.pathname === '/projet' ? 'act projet-step' : 'projet-step'}>
+                  <div className="flex flex-row">
+                    <AiFillProject color="white" fontSize={20} className="mr-4 projet-step" />
+                    &nbsp; &nbsp;Les Projets
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/tache">
+                <li className={router.pathname === '/tache' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <TiNews color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Les Taches
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/evaluation">
+                <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Evaluation
+                  </div>
+                </li>
+              </Link>
+             
+              <Link legacyBehavior href="/contact">
+                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                    &nbsp; &nbsp; Contacter la DSI
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/contact">
+                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
+                    &nbsp; &nbsp; Réclamation
+                  </div>
+                </li>
+              </Link>
+            </>
+          )}
+        </ul>
+      </div>
+      <div id="">
         <nav className="">
           <div className="container-fluid">
             <div className="topbarrr">
@@ -233,7 +279,7 @@ const Side = () => {
                   <FaRegUserCircle size={33} color="blue" />
                 </div>
                 <div className="flex-grow-1 ms-3">
-                  <strong>{user.firstName + ' ' + user.lastName}</strong>
+                  <strong>{`${user.firstName} ${user.lastName}`}</strong>
                 </div>
               </div>
             </div>

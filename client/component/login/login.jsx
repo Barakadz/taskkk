@@ -114,11 +114,11 @@ setLoading(false)
   localStorage.setItem("mailtask", response.data.userinfo.mail);
 
   localStorage.setItem("passwordtask", values.password);
+    router.push('/projet');
 
 
     }
 
-    router.push('/projet');
 
        } catch (error) {
       console.error('Erreur :', error);

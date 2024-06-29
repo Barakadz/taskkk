@@ -14,53 +14,71 @@ import bcrypt from "bcryptjs";
 // Now you can access process.env.JWT_SECRET
 
 
- 
 export const AddTache = (req, res) => {
-  //CHECK USER IF EXISTS
+  const currentDate = moment();
+  const formattedDate = currentDate.format('DD/MM/YYYY HH:mm:ss');
 
- // const q = "SELECT * FROM users WHERE email = ?";
+  // Convert input dates to MySQL date format
+  const date_debut = moment(req.body.date_debut).format('YYYY-MM-DD');
+  const date_fin = moment(req.body.date_fin).format('YYYY-MM-DD');
 
- // db.query(q, [req.body.EmailAdress], (err, data) => {
-   // if (err) return res.status(500).json(err);
-    //if (data.length) return res.status(409).json("User already exists!");
-    //CREATE A NEW USER
-    //Hash the password
-   // const salt = bcrypt.genSaltSync(10);//method of hash
-   // const hashedPassword = bcrypt.hashSync(req.body.Password, salt);
-     const currentDate = moment();
-    const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
-     const q =
-      "INSERT INTO `tache`( `titre_tache`,`level`,  `description`, `equipe`, `date_debut`, `date_fin`, `etat`, `mail`,`projet`, `departement_user`,`validation`, `validation_dg`, `date`, `cause_responsable`, `cause_dg`)   VALUE (?)";
+  const checkDateQuery = `
+    SELECT * 
+    FROM tache 
+    WHERE (
+      (date_debut <= ? AND date_fin >= ?) OR
+      (date_debut <= ? AND date_fin >= ?) OR
+      (date_debut >= ? AND date_debut <= ?) OR
+      (date_fin >= ? AND date_fin <= ?)
+    )
+    AND mail = ? AND projet = ?
+  `;
 
-    const values = [
-      req.body.titre_tache,
-      req.body.level,
+  db.query(checkDateQuery, [date_debut, date_debut, date_fin, date_fin, date_debut, date_fin, date_debut, date_fin, req.body.mail, req.body.projet], (err, data) => {
+    if (err) return res.status(500).json({ error: err });
 
-      req.body.description,
-      req.body.equipe,
-      req.body.date_debut,
-      req.body.date_fin,
-      req.body.etat,
-      req.body.mail,
-      req.body.projet,
-      req.body.departement_user,
+    if (data.length > 0) {
+      return res.status(400).json("La plage de dates est déjà réservée par une autre tâche du même projet. Veuillez choisir une autre plage de dates pour cette tâche.");
+    }
 
-      'en cours',
-      'en cours',
+    const checkEmailQuery = "SELECT COUNT(id) AS tacheprojectCount FROM tache WHERE mail = ? AND projet = ?";
+    db.query(checkEmailQuery, [req.body.mail, req.body.projet], (err, data) => {
+      if (err) return res.status(500).json({ error: err });
 
-Date,
-'en cours',
-'en cours'
+      const projectCount = data[0].tacheprojectCount;
+      if (projectCount === 3) {
+        return res.status(400).json({ error: "Le nombre maximum de tâches pour un seul projet est de 3." });
+      }
 
-     ];
+      const insertQuery = `
+        INSERT INTO tache (
+          titre_tache, level, description, equipe, date_debut, date_fin, etat, mail, projet, departement_user, validation, date, cause_responsable,validation_dg
+        ) VALUES (?)`;
 
-    db.query(q, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json("Tache  has been created.");
+      const values = [
+        req.body.titre_tache,
+        req.body.level,
+        req.body.description,
+        req.body.equipe,
+        date_debut, // Use the formatted date variables
+        date_fin,   // Use the formatted date variables
+        req.body.etat,
+        req.body.mail,
+        req.body.projet,
+        req.body.departement_user,
+        'en cours',
+        formattedDate,
+        'en cours',
+        'en cours'
+      ];
+
+      db.query(insertQuery, [values], (err, data) => {
+        if (err) return res.status(500).json({ error: err });
+        return res.status(200).json("Tache has been created.");
+      });
     });
- // });
+  });
 };
-
 
 
 export const GetTacheMail = (req, res) => {

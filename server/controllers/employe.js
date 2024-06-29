@@ -31,13 +31,14 @@ export const AddEmploye = (req, res) => {
     const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
   
     const q =
-      "INSERT INTO `employe`(  `username`, `salaire`, `prime`)   VALUE (?)";
+      "INSERT INTO `employe`(  `username`, `salaire`, `prime`, `trimestre`)   VALUE (?)";
 
     const values = [
       req.body.username,
       req.body.salaire,
-      req.body.prime,
- 
+      '0',
+      req.body.trimestre
+
 
      ];
 

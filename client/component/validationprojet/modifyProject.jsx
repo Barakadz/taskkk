@@ -73,8 +73,7 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
                 setOptionsPartic(options);
             })
             .catch(error => {
-                console.error('There was an error fetching the options!', error);
-                toast.error("Error fetching user data.");
+               
             });
     }, []);
     const removeQuotesAndBackslashes = (str) => str.replace(/["\\]/g, '');
@@ -109,7 +108,7 @@ reason:'',
         reason:Yup.string().required('Il faut remplir votre Raison de validation'),
     });
 
-    const onSubmit = (values, { resetForm }) => {
+    const onSubmit =async (values, { resetForm }) => {
         const DirectionAll = values.direction.map(item => item.value).join('-');
         const FilialeAll = values.filiale.map(item => item.value).join('-');
         const ParticipantAll = values.participant.map(item => item.value).join('-');
@@ -117,27 +116,33 @@ reason:'',
         const valAll = values.validationStatus.map(item => item.value).join('-');
 
 
+
+
+
+
+
         
+
+
+
+
+
+
+
+
         const apiUrll = 'https://www.groupe-hasnaoui.com/mailprojet.php';
-        const requestDataa = {
-         Email: mai.replace(/"/g, '') ,
-        
-         Nom:user.firstName,
-         Prenom:user.lastName
-        };
-        
-        axios.post(apiUrll, requestDataa, {
-         headers: {
-             'Content-Type': 'application/x-www-form-urlencoded'
-         }})
-          .then(response => {
-           //  console.log('POST request successful');
-          // console.log('Response data:', response.data);
-          })
-          .catch(error => {
-           console.error('An error occurred:', error);
-          });
-            
+      const requestDataa = {
+        Email: mai.replace(/"/g, '') ,
+        Nom: ' ',
+        Prenom: ' '
+      };
+
+      await axios.post(apiUrll, requestDataa, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }); 
+         
 
 
 
@@ -150,7 +155,7 @@ reason:'',
              
             validr: valAll,
             cause: values.reason,
-             
+        participant:ParticipantAll     
            
         };
 
@@ -173,7 +178,9 @@ reason:'',
             .then(data => {
                 toast.success('Le Projet à été bien Modifié');
                 resetForm(initialValues); // Reset form fields
-                window.location.href='';
+                setTimeout(() => {
+                    window.location.href = '';
+                  }, 3000);
                         })
             .catch(error => {
                 toast.error('An error occurred:', error);
@@ -251,18 +258,18 @@ reason:'',
                                                 <label htmlFor="filiale" className="form-label">Filiale <b className='text-danger'>*</b></label>
                                                 <Field name="filiale" options={optionsFiliale} component={CustomSelect} isMulti={true}  isDisabled={true}    />
                                                 <ErrorMessage name="filiale" component="div" className="text-danger" />
-                                            </div>
-                                            <div className="col-l-12">
-                                                <label htmlFor="participant" className="form-label">Participant <b className='text-danger'>*</b></label>
-                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true}   isDisabled={true}   
-                                                />
-                                                <ErrorMessage name="participant" component="div" className="text-danger" />
-                                            </div>
-                                            <div className="col-md-12">
+                                            </div>   <div className="col-md-12">
                                                 <label htmlFor="description" className="form-label">Description <b className='text-danger'>*</b><TbFileDescription size={30} style={{ marginLeft: "10px" }} /></label>
                                                 <Field as="textarea" className="form-control" id="description" name="description" disabled/>
                                                 <ErrorMessage name="description" component="div" className="text-danger" />
                                             </div>
+                                            <div className="col-l-12">
+                                                <label htmlFor="participant" className="form-label">Participant <b className='text-danger'>*</b></label>
+                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true}   isDisabled={false}   
+                                                />
+                                                <ErrorMessage name="participant" component="div" className="text-danger" />
+                                            </div>
+                                         
 
                                             <div className="col-md-12">
                                                 <label htmlFor="validationStatus" className="form-label">Validation <b className='text-danger'>*</b><TbFileDescription size={30} style={{ marginLeft: "10px" }} /></label>

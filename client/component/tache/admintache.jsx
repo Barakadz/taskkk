@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+ import axios from 'axios';
 import AddGalButton from './addGalButton';
 import ModifyTache from './modifyTache';
+import { IoIosArrowDropright } from "react-icons/io";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
 
 
  
@@ -57,9 +57,23 @@ const AdminTache = () => {
     { field: 'date_debut', title: 'Date de Début' },
     { field: 'date_fin', title: 'Date de Fin' },
   
-    { field: 'validation', title: 'Validation responsable', cellStyle: { backgroundColor: '#D6FA8C' }  },
-    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' }  },
-
+    { 
+      field: 'validation', 
+      title: 'Validation Responsable',
+      render: rowData => (
+        <div style={{ backgroundColor: rowData.validation === 'nonvalide' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
+          {rowData.validation}
+        </div>
+      )
+    } ,
+   { field: 'validation_dg', 
+    title: 'Validation DGA',
+    render: rowData => (
+      <div style={{ backgroundColor: rowData.validation === 'nonvalide' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
+        {rowData.validation}
+      </div>
+    )
+  } 
     
    ];
  
@@ -102,7 +116,7 @@ const AdminTache = () => {
 <ModifyTache  titretach={titreTache} nive={niveau} DateDebut={DateDebut} dateFin={DateFin} proj={Projet} equi={Equipe} av={Avancement}
 Descript={Description} id={idTache}
 />
-     <ToastContainer />    
+    
     <MaterialTable
     title="La liste Des Taches :"
     columns={columns}
@@ -110,8 +124,7 @@ Descript={Description} id={idTache}
     options={{
       search: true,
       paging: true,
-      filtering: true,
-      exportButton: true, headerStyle: {
+       exportButton: true, headerStyle: {
         backgroundColor: '#01579b',
         color: '#FFF'
       },
@@ -133,7 +146,7 @@ Descript={Description} id={idTache}
         onClick: () => fetchData(),
       }
       ,
-      {
+      /*{
         icon: 'edit',
         tooltip: 'Modifier Tache',
         isFreeAction: false,
@@ -142,16 +155,27 @@ Descript={Description} id={idTache}
         JSON.stringify(rowData.etat),JSON.stringify(rowData.projet),JSON.stringify(rowData.level)
        
       ),
-      } 
+      } */
     ]}
    
 
 
-    detailPanel={rowData => {
-      return (<>
+    detailPanel={[
+      {  icon: () => <IoIosArrowDropright className='parametres-step'/>, // Icône lorsque le panneau est fermé
+        openIcon: () => <IoIosArrowDropdownCircle className='parametres-step'/>, // Icône lorsque le panneau est ouvert
+      
+        tooltip: 'Plus Détails',
+        render: rowData => {
+          return (
+      <div style={{ marginLeft: '25px' }} >
+        
       <div className="mx-4"><p><b>Description :</b></p> 
        <div
           dangerouslySetInnerHTML={{ __html: rowData.description }}
+        />
+          <p><b>Cause responsable :</b></p> 
+       <div
+          dangerouslySetInnerHTML={{ __html: rowData.cause_responsable }}
         />
          <p><b>Equipe :</b></p> 
        <div
@@ -160,11 +184,11 @@ Descript={Description} id={idTache}
          <p><b>Etat d'avancement :</b></p> 
        <div
           dangerouslySetInnerHTML={{ __html: rowData.etat }}
-        /></div>
-       
-</>
-      )
-    }}
+        /> </div></div>);
+      },
+     },
+   ]}
+
 
     editable={{
      
@@ -185,7 +209,7 @@ Descript={Description} id={idTache}
 toast.success(response.data)
 })
 .catch(error => {
-toast.error(error)});
+ });
             resolve()
           }, 1000)
         }),

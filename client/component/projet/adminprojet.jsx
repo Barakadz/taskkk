@@ -8,6 +8,9 @@ import AddGalButton from './addGalButton';
 import ModifyProject from './modifyProject';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
+import { CiUser, CiCalendarDate, CiMail } from "react-icons/ci";
+import { IoIosArrowDropright } from "react-icons/io";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
 
 const AdminProjet = () => {
   const [titreProject, setTitreProject] = useState('');
@@ -63,9 +66,25 @@ const AdminProjet = () => {
     { field: 'titre_projet', title: 'Titre de Projet' },
     { field: 'date_debut', title: 'Date de Début' },
     { field: 'date_fin', title: 'Date de Fin' },
-     { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' }  },
-    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' }  },
-
+    { 
+      field: 'validation', 
+      title: 'Validation Responsable',
+      render: rowData => (
+        <div style={{ backgroundColor: rowData.validation === 'nonvalide' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
+          {rowData.validation}
+        </div>
+      )
+    },
+    { 
+      field: 'validation_dg', 
+      title: 'Validation DGA',
+      render: rowData => (
+        <div style={{ backgroundColor: rowData.validation_dg === 'nonvalide' ? 'red' : '#A5D721' }} className='etatprojetdga-step p-2'>
+          {rowData.validation_dg}
+        </div>
+      )
+    }
+ 
     
   ];
 
@@ -108,8 +127,7 @@ const AdminProjet = () => {
         options={{
           search: true,
           paging: true,
-          filtering: true,
-          exportButton: true,
+           exportButton: true,
           headerStyle: {
             backgroundColor: '#01579b',
             color: '#FFF'
@@ -153,8 +171,19 @@ const AdminProjet = () => {
               }, 1000);
             }),
         }}
-        detailPanel={rowData => (
-          <div style={{ marginLeft: '25px' }}>
+        detailPanel={[
+          {  icon: () => <IoIosArrowDropright className='parametres-step'/>, // Icône lorsque le panneau est fermé
+            openIcon: () => <IoIosArrowDropdownCircle className='parametres-step'/>, // Icône lorsque le panneau est ouvert
+          
+            tooltip: 'Plus Détails',
+            render: rowData => {
+              return (
+          <div style={{ marginLeft: '25px' }} >
+            
+            <p><b>Cause responsable :</b></p>
+            <div dangerouslySetInnerHTML={{ __html: rowData.cause_responsable }} />
+            <p><b>Cause directeur :</b></p>
+            <div dangerouslySetInnerHTML={{ __html: rowData.cause_directeur }} />
             <p><b>Description :</b></p>
             <div dangerouslySetInnerHTML={{ __html: rowData.description }} />
             <p><b>Participant :</b></p>
@@ -171,10 +200,11 @@ const AdminProjet = () => {
 
 
 
-
-          </div>
-          
-        )}
+          </div>);
+             },
+            },
+          ]}
+      
         localization={{
           body: {
             emptyDataSourceMessage: "Pas d'enregistrement à afficher",

@@ -11,14 +11,14 @@ import { IoIosBusiness } from "react-icons/io";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import * as Yup from 'yup';
-import { Formik, Form, Field, ErrorMessage, useFormikContext } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 
 const animatedComponents = makeAnimated();
 
-const AddGalButton = ( ) => {
- 
+const AddGalButton = () => {
+
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -61,7 +61,9 @@ const AddGalButton = ( ) => {
 
   const [optionsChef, setOptionsChef] = useState([]);
   const [optionsPartic, setOptionsPartic] = useState([]);
-
+  const [mailDirector, setMailDirector] = useState('');
+   
+ 
   useEffect(() => {
     axios.get('https://api.ldap.groupe-hasnaoui.com/get/users/group/GSHA-NEW?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJUb2tlbiI6IkZvciBEU0kiLCJVc2VybmFtZSI6ImFjaG91cl9hciJ9.aMy1LUzKa6StDvQUX54pIvmjRwu85Fd88o-ldQhyWnE')
       .then(response => {
@@ -76,82 +78,112 @@ const AddGalButton = ( ) => {
         console.error('There was an error fetching the options!', error);
         toast.error("Error fetching user data.");
       });
+
   }, []);
+
+  const fetchDirectorMail = async () => {
+    try {
+      const response = await axios.post('https://task.groupe-hasnaoui.com/api/directeur/directeurmail', { dep: user.department });
+      const data = response.data;
+      if (data.length > 0) {
+        setMailDirector(data[0].mail);
+      }
+    } catch (error) {
+      console.error('Error fetching director mail:', error);
+    }
+  };
 
   const initialValues = {
     titreProjet: '',
-     dateDebut: '',
+    dateDebut: '',
     dateFin: '',
     chefProjet: [],
     direction: [],
     filiale: [],
     participant: [],
     description: '',
-  }
+  };
 
   const validationSchema = Yup.object().shape({
     titreProjet: Yup.string().required('Il faut remplir votre Titre de Projet'),
- 
-    dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').max(new Date(), "La date de début ne peut pas être dans le futur"),
-    dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début'),
-    chefProjet: Yup.array()
-    .test('unique', 'Vous ne pouvez sélectionner qu\'un seul chef de projet', (value) => {
-      return value.length <= 1;
-    })
-    .min(1, 'Il faut remplir votre Chef de Projet')
-    .required('Il faut remplir votre Chef de Projet'),
-        direction: Yup.array().min(1, 'Il faut remplir votre Direction de Projet').required('Il faut remplir votre Direction de Projet'),
+    dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').min(new Date('2024-04-01'), 'La date de début doit être après le 1er avril 2024').max(new Date('2024-06-30'), 'La date de début doit être avant le 30 juin 2024'),
+    dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début').max(new Date('2024-06-30'), 'La date de fin doit être avant le 30 juin 2024'),
+    chefProjet: Yup.array().test('unique', 'Vous ne pouvez sélectionner qu\'un seul chef de projet', value => value.length <= 1).min(1, 'Il faut remplir votre Chef de Projet').required('Il faut remplir votre Chef de Projet'),
+    direction: Yup.array().min(1, 'Il faut remplir votre Direction de Projet').required('Il faut remplir votre Direction de Projet'),
     filiale: Yup.array().min(1, 'Il faut remplir votre filiale de Projet').required('Il faut remplir votre filiale de Projet'),
     participant: Yup.array().min(1, 'Il faut remplir votre participant de Projet').required('Il faut remplir votre participant de Projet'),
     description: Yup.string().required('Il faut remplir votre description de Projet'),
   });
 
-  const onSubmit = (values, { resetForm }) => {
-    const DirectionAll = values.direction.map(item => item.value).join('-');  
-    const FilialeAll = values.filiale.map(item => item.value).join('-');  
-    const ParticipantAll = values.participant.map(item => item.value).join('-');  
-    const ChefProjetAll = values.chefProjet.map(item => item.value).join('-');  
+  const onSubmit = async (values, { resetForm }) => {
+    await fetchDirectorMail();
+    
+    const DirectionAll = values.direction.map(item => item.value).join('-');
+    const FilialeAll = values.filiale.map(item => item.value).join('-');
+    const ParticipantAll = values.participant.map(item => item.value).join('-');
+    const ChefProjetAll = values.chefProjet.map(item => item.value).join('-');
 
     const apiUrl = 'https://task.groupe-hasnaoui.com/api/projet/add';
     const requestData = {
       titre_projet: values.titreProjet,
-       description: values.description,
-       chefprojetgroupe:  ChefProjetAll ,
-       date_debut: values.dateDebut,
-       date_fin: values.dateFin,
+      description: values.description,
+      chefprojetgroupe: ChefProjetAll,
+      date_debut: values.dateDebut,
+      date_fin: values.dateFin,
       departement: DirectionAll,
       filialegroupe: FilialeAll,
       participant: ParticipantAll,
-       mail: user.mail,
-       departement_user:user.department
+      mail: user.mail,
+      departement_user: user.department
     };
-    
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        toast.success('Le Projet à été bien Ajouté');
 
-      resetForm(initialValues); // Reset form fields
-      setTimeout(() => {
-        window.location.href=''
-
-      }, 3000);
-        })
-      .catch(error => {
-        toast.error('An error occurred:', error);
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
       });
-  }
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data);
+      }
+
+      const apiUrll = 'https://www.groupe-hasnaoui.com/maildirecteur.php';
+      const requestDataa = {
+        Email: mailDirector,
+        Nom: user.firstName,
+        Prenom: user.lastName
+      };
+
+      await axios.post(apiUrll, requestDataa, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
+      resetForm(initialValues);
+      toast.success('Le Projet a été bien Ajouté');
+    /*     const modal = document.getElementById('exampleModal');
+  if (modal) {
+    modal.classList.remove('show'); // Remove 'show' class to hide modal
+    const modalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
+    if (modalBackdrop) {
+      modalBackdrop.remove(); // Remove modal backdrop
+    }
+  }*/
+      setTimeout(() => {
+        window.location.href = '';
+      }, 3000);
+    } catch (error) {
+      console.error('An error occurred:', error);
+      toast.error(`Error: ${error.message}`);
+      resetForm(initialValues);
+
+    }
+  };
 
   const handleCloseModalClick = () => {
     const modal = document.getElementById('exampleModal');
@@ -161,18 +193,16 @@ const AddGalButton = ( ) => {
     }
   };
 
-  const CustomSelect = ({ field, form, options, isMulti }) => {
-    return (
-      <Select
-        {...field}
-        options={options}
-        isMulti={isMulti}
-        components={animatedComponents}
-        onChange={option => form.setFieldValue(field.name, option)}
-        value={field.value}
-      />
-    );
-  };
+  const CustomSelect = ({ field, form, options, isMulti }) => (
+    <Select
+      {...field}
+      options={options}
+      isMulti={isMulti}
+      components={animatedComponents}
+      onChange={option => form.setFieldValue(field.name, option)}
+      value={field.value}
+    />
+  );
 
   return (
     <>
@@ -199,17 +229,17 @@ const AddGalButton = ( ) => {
                             <ErrorMessage name="titreProjet" component="div" className="text-danger" />
                           </div>
                         </div>
-                         
-                       <div className="col-lg-6">
-                             <label htmlFor="participant" style={{ float: 'left' }}>Participant <span className='text-danger'>*</span></label>
-                             <br/>   <Field
-                                name="participant"
+                        <div className="col-lg-6">
+                             <label htmlFor="chefProjet" style={{ float: 'left' }}>Chef de projet <span className='text-danger'>*</span></label>
+                           <br/>    <Field
+                                name="chefProjet"
                                 component={CustomSelect}
-                                options={optionsPartic}
+                                options={optionsChef}
                                 isMulti={true}
                               />
-                             <ErrorMessage name="participant" component="div" className="text-danger" />
-                         </div>
+                            <ErrorMessage name="chefProjet" component="div" className="text-danger" />
+                                                        </div>  
+                    
                         <div className="col-lg-6">
                           <div className="form-group">
                             <label htmlFor="dateDebut" style={{ float: 'left' }}>Date début <span className='text-danger'>*</span></label>
@@ -230,17 +260,17 @@ const AddGalButton = ( ) => {
                             <ErrorMessage name="dateFin" component="div" className="text-danger" />
                           </div>
                         </div>
-                        <div className="col-lg-6">
-                             <label htmlFor="chefProjet" style={{ float: 'left' }}>Chef de projet <span className='text-danger'>*</span></label>
-                           <br/>    <Field
-                                name="chefProjet"
+                       
+                                                        <div className="col-lg-6">
+                             <label htmlFor="participant" style={{ float: 'left' }}>Participant <span className='text-danger'>*</span></label>
+                             <br/>   <Field
+                                name="participant"
                                 component={CustomSelect}
-                                options={optionsChef}
+                                options={optionsPartic}
                                 isMulti={true}
                               />
-                            <ErrorMessage name="chefProjet" component="div" className="text-danger" />
-                                                        </div>
-
+                             <ErrorMessage name="participant" component="div" className="text-danger" />
+                         </div>
                          <div className="col-lg-6">
                              <label htmlFor="direction" style={{ float: 'left' }}>Scope <span className='text-danger'>*</span></label>
                               <br/> <Field
@@ -281,9 +311,16 @@ const AddGalButton = ( ) => {
             </div>
           </div>
         </div>
-        <button type="button" className="btn btn-success projet-step m-2 " data-bs-toggle="modal" data-bs-target="#exampleModal">
-          <i className="fa fa-plus"></i> Ajouter un Projet
-        </button>
+        <button
+  type="button"
+  className="btn btn-success projet-step m-2 addproject-step"
+  data-bs-toggle="modal"
+  data-bs-target="#exampleModal"
+  onClick={fetchDirectorMail}
+>
+  <i className="fa fa-plus"></i> Ajouter un Projet
+</button>
+
         <ToastContainer />
       </center>
     </>

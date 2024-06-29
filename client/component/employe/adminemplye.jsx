@@ -3,9 +3,8 @@ import MaterialTable from 'material-table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import AddGalButton from './addGalButton';
-import ModifyGalerie from './modifygalerie';
-import Tour from '../tour';
+  import Tour from '../tour';
+import AddGalButtonEmploye from './addGalButton';
 
 const AdminEmploye = () => {
   const [ImageGal, setImage] = useState('');
@@ -15,7 +14,7 @@ const AdminEmploye = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://task.groupe-hasnaoui.com/api/projet/');
+      const response = await axios.get('https://task.groupe-hasnaoui.com/api/employe@groupe');
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data: ', error);
@@ -30,13 +29,12 @@ const AdminEmploye = () => {
 
   const columns = [
     { field: 'id', title: 'id', hidden: true },
-    { field: 'titre_projet', title: 'Titre de Projet' },
-    { field: 'chef_projet', title: 'Chef de projet' },
-    { field: 'date_debut', title: 'Date de Début' },
-    { field: 'date_fin', title: 'Date de Fin' },
-    { field: 'departement', title: 'Département' },
-    { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#C4D600' } },
-  ];
+    { field: 'username', title: 'Employe' },
+    { field: 'salaire', title: 'Salaire' },
+    { field: 'prime', title: 'Prime' },
+    { field: 'mois', title: 'Mois' },
+    { field: 'trimestre', title: 'Trimestre' },
+   ];
 
   const handleAddUserClick = () => {
     const modal = document.getElementById('exampleModal');
@@ -58,12 +56,10 @@ const AdminEmploye = () => {
   };
 
   return (
-    <>
-      <AddGalButton />
-      <ModifyGalerie id={IdGal} image={ImageGal} type={TypeGal} />
-      <ToastContainer />
+    <><AddGalButtonEmploye/>
+        <ToastContainer />
       <MaterialTable
-        title="La liste Des Projets :"
+        title="La liste Des Employes :"
         columns={columns}
         data={data}
         options={{
@@ -111,18 +107,7 @@ const AdminEmploye = () => {
               }, 1000);
             }),
         }}
-        detailPanel={rowData => (
-          <div style={{ marginLeft: '25px' }}>
-            <p><b>Description :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.description }} />
-            <p><b>Participant :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.participant }} />
-            <p><b>Filiale :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.filiale }} />
-            <p><b>Scope :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />
-          </div>
-        )}
+      
         localization={{
           body: {
             emptyDataSourceMessage: "Pas d'enregistrement à afficher",

@@ -31,8 +31,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
-                toast.error("Error fetching user data.");
-            });
+             });
     }, []);
 
     const fetchOptionsProjet = async () => {
@@ -58,8 +57,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
             setOptionsProjet(options);
         } catch (error) {
             console.error('Error fetching project options:', error);
-            toast.error(`An error occurred: ${error.message}`);
-        }
+         }
     };
 
     const removeQuotesAndBackslashes = (str) => str.replace(/["\\]/g, '');
@@ -129,8 +127,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
         
               }, 3000);        })
         .catch(error => {
-            toast.error(`Erreur lors de la modification de la tâche: ${error.message}`);
-        });
+         });
     };
 
     const handleCloseModalClick = () => {
@@ -202,7 +199,7 @@ const ModifyTache = ({ id, titretach, niveau, DateDebut, dateFin, proj, equi, av
                                                     <label htmlFor="niveau" style={{ float: 'left' }}>Niveau <span className='text-danger'>*</span>:</label>
                                                     <div className="input-group mb-3">
                                                         <span className="input-group-text" id="basic-addon1"> </span>
-                                                        <Field as="select" id="level" name="level" className="form-select">
+                                                        <Field as="select" id="level" name="level" className="form-select" >
                                                             <option value="">--choisir le niveau de tâche--</option>
                                                             {levelOptions.map((option) => (
                                                                 <option key={option.value} value={option.value}>

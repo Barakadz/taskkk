@@ -14,7 +14,23 @@ import bcrypt from "bcryptjs";
 // Now you can access process.env.JWT_SECRET
 
 
+ 
+export const GetTousProjetDG = (req, res) => {
+
   
+   
+
+  const q = "SELECT * FROM projet WHERE  validation_dg ='en cours' and validation='valide' order by id desc";
+  
+  // Query the database
+  db.query(q, (err, data) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Database query error" });
+    }
+    return res.status(200).json(data);
+  });
+}
 
   
 
@@ -29,7 +45,7 @@ export const GetProjetVal = (req, res) => {
     return res.status(400).json({ message: "Departement is required" });
   }
 
-  const q = "SELECT * FROM projet WHERE departement_user = ? order by id desc";
+  const q = "SELECT * FROM projet WHERE departement_user = ? and validation !='nonvalide' order by id desc";
   
   // Query the database
   db.query(q, [dep], (err, data) => {
@@ -41,65 +57,61 @@ export const GetProjetVal = (req, res) => {
   });
 }
 
- 
 export const UpdateProjetVal = (req, res) => {
-    //recupére vers paramétres
-    const id = req.params.id;
-    //recupére vers body
-   
+  // Retrieve ID from parameters
+  const id = req.params.id;
 
-    if (!id) {
+  // Check if ID is provided
+  if (!id) {
       return res.status(400).json({ error: 'ID is required' });
-    }
+  }
 
-  //select titre de projet 
-    const qq = "SELECT titre_projet FROM projet WHERE id = ?";
+  // Validate body parameters
+  const { validr, cause } = req.body;
 
-   db.query(qq, [id], (err, userData) => {
-     if (err) {
-       return res.status(500).json({ message: "Erreur de base de données", error: err });
-     }
-   
-     if (userData.length > 0) {
-       const tit = userData[0].titre_projet;
+  // Validate required body parameters
+  if (!validr || !cause) {
+      return res.status(400).json({ error: 'Validation status and cause are required' });
+  }
 
-    
-
-     if(req.body.validr=='nonvalide'){
-      const qq = "UPDATE `tache` SET `validation` = ?,`cause_responsable` = ?  WHERE projet = ?";
-  
-      db.query(qq,[ req.body.validr,req.body.cause,
-          
-        tit], (err, userData) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          return res.status(500).json({ error: 'Database error' });
-        }
-    
-     })
-    }
-
- }  });
-
- 
-    
-    const q = "UPDATE `projet` SET `validation` = ?,`cause_responsable` = ?  WHERE id = ?";
-  
-    db.query(q,[ req.body.validr,req.body.cause,
-        
-   id], (err, userData) => {
-      if (err) {
+  // Update the `tache` table if validation status is 'nonvalide'
+  if (validr === 'nonvalide') {
+      const qq = "UPDATE `tache` SET `validation` = ?, `cause_responsable` = ? WHERE projet = ?";
+      db.query(qq, [validr, cause, id], (err) => {
+          if (err) {
+              console.error('Error executing query:', err);
+              return res.status(500).json({ error: 'Database error' });
+          }
+      });
+  }
+//update participant projet
+const qq = "UPDATE `projet` SET `participant` = ?  WHERE id = ?";
+db.query(qq, [req.body.participant, id], (err) => {
+    if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({ error: 'Database error' });
+    }
+});
+//update participant tache
+const qqa = "UPDATE `tache` SET `equipe` = ?  WHERE projet = ?";
+db.query(qqa, [req.body.participant, id], (err) => {
+    if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).json({ error: 'Database error' });
+    }
+});
+  // Update the `projet` table
+  const q = "UPDATE `projet` SET `validation` = ?, `cause_responsable` = ? WHERE id = ?";
+  db.query(q, [validr, cause, id], (err, userData) => {
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).json({ error: 'Database error' });
       }
-  
+
       if (userData.affectedRows === 0) {
-        return res.status(404).json({ error: 'projet not found' });
+          return res.status(404).json({ error: 'Project not found' });
       }
-  
-      return res.status(200).json({ message: 'projet updated successfully' });
-    });
 
-}
-
- 
+      return res.status(200).json({ message: 'Project updated successfully' });
+  });
+};

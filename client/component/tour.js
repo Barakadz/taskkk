@@ -17,10 +17,32 @@ const Tour = () => {
       content: 'Entrez votre Mot de pass ici',
     }
     ,
+   
     {
-      target: '.problem-step',
-      content: "Pour résoudre un problème, veuillez contacter la Direction des Systèmes d'Information",
+      target: '.addproject-step',
+      content: "Vous pouvez ajouter un projet en cliquant sur le bouton.",
+    }
+   
+    ,
+    {
+      target: '.addtache-step',
+      content: "Vous pouvez ajouter une tache en cliquant sur le bouton.",
+    }
+   
+   ,
+    {
+      target: '.etatprojetresponsable-step',
+      content: "Le statut de validation du responsable",
     },
+    {
+      target: '.etatprojetdga-step',
+      content: "Le statut de validation du Directeur Général Adjoint ",
+    },
+    {
+      target: '.parametres-step',
+      content: "Possible de connaître la raison si le projet n'est pas valide..... ",
+    }
+  
   ];
 
   if (!isClient) return null;
@@ -31,7 +53,7 @@ const Tour = () => {
       continuous={true}
       scrollToFirstStep={true}
       showProgress={true}
-      showSkipButton={true}
+      showSkipButton={false}
     />
   );
 };

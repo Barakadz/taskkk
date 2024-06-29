@@ -88,9 +88,10 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
 
     const validationSchema = Yup.object().shape({
         titreProjet: Yup.string().required('Il faut remplir votre Titre de Projet'),
-        dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').max(new Date(), "La date de début ne peut pas être dans le futur"),
-        dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début'),
-        chefProjet: Yup.array().test('unique', 'Vous ne pouvez sélectionner qu\'un seul chef de projet', (value) => value.length <= 1)
+        dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').min(new Date('2024-04-01'), 'La date de début doit être après le 1er avril 2024')
+        .max(new Date('2024-06-30'), 'La date de début doit être avant le 30 juin 2024'),
+        dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début')    .max(new Date('2024-06-30'), 'La date de fin doit être avant le 30 juin 2024')    ,
+       chefProjet: Yup.array().test('unique', 'Vous ne pouvez sélectionner qu\'un seul chef de projet', (value) => value.length <= 1)
             .min(1, 'Il faut remplir votre Chef de Projet')
             .required('Il faut remplir votre Chef de Projet'),
         direction: Yup.array().min(1, 'Il faut remplir votre Direction de Projet').required('Il faut remplir votre Direction de Projet'),
@@ -159,7 +160,7 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
         }
     };
 
-    const CustomSelect = ({ field, form, options, isMulti }) => (
+    const CustomSelect = ({ field, form, options, isMulti,isDisabled }) => (
         <Select
             {...field}
             options={options}
@@ -167,6 +168,7 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
             components={animatedComponents}
             onChange={option => form.setFieldValue(field.name, option)}
             value={field.value}
+            isDisabled={isDisabled}
         />
     );
 
@@ -191,17 +193,17 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="dateDebut" className="form-label">Date Début <b className='text-danger'>*</b> <MdOutlineDateRange size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field type="date" className="form-control" id="dateDebut" name="dateDebut" />
+                                                <Field type="date" className="form-control" id="dateDebut" name="dateDebut" disabled/>
                                                 <ErrorMessage name="dateDebut" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="dateFin" className="form-label">Date Fin <b className='text-danger'>*</b><MdOutlineDateRange size={30} style={{ marginLeft: "10px" }} /></label>
-                                                <Field type="date" className="form-control" id="dateFin" name="dateFin" />
+                                                <Field type="date" className="form-control" id="dateFin" name="dateFin" disabled/>
                                                 <ErrorMessage name="dateFin" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
                                                 <label htmlFor="chefProjet" className="form-label">Chef Projet <b className='text-danger'>*</b></label>
-                                                <Field name="chefProjet" options={optionsChef} component={CustomSelect} isMulti={true} />
+                                                <Field name="chefProjet" options={optionsChef} component={CustomSelect} isMulti={true} isDisabled={true}/>
                                                 <ErrorMessage name="chefProjet" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-lg-4">
@@ -216,7 +218,7 @@ const ModifyProject = ({ id, tire_projet, descri, chefp, dadebut, dafin, dep, fi
                                             </div>
                                             <div className="col-l-12">
                                                 <label htmlFor="participant" className="form-label">Participant <b className='text-danger'>*</b></label>
-                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true} />
+                                                <Field name="participant" options={optionsPartic} component={CustomSelect} isMulti={true} isDisabled={true}/>
                                                 <ErrorMessage name="participant" component="div" className="text-danger" />
                                             </div>
                                             <div className="col-md-12">

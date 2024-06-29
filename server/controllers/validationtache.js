@@ -18,7 +18,7 @@ import bcrypt from "bcryptjs";
 
   
 
-export const GetTachVal = (req, res) => {
+export const GetTacheVal = (req, res) => {
 
   
   // Destructure and sanitize the email from the request body
@@ -29,10 +29,10 @@ export const GetTachVal = (req, res) => {
     return res.status(400).json({ message: "Departement is required" });
   }
 
-  const q = "SELECT * FROM tache WHERE departement_user = ? and validatio = ? order by id desc";
+  const q = "SELECT * FROM tache WHERE departement_user = ? and validation = ? order by id desc";
   
   // Query the database
-  db.query(q, [dep,'valide'], (err, data) => {
+  db.query(q, [dep,'en cours'], (err, data) => {
     if (err) {
       console.error("Database query error:", err);
       return res.status(500).json({ error: "Database query error" });
@@ -42,7 +42,7 @@ export const GetTachVal = (req, res) => {
 }
 
  
-export const UpdateProjetVal = (req, res) => {
+export const UpdateTacheVal = (req, res) => {
     //recupére vers paramétres
     const id = req.params.id;
     //recupére vers body
@@ -52,38 +52,11 @@ export const UpdateProjetVal = (req, res) => {
       return res.status(400).json({ error: 'ID is required' });
     }
 
-  //select titre de projet 
-    const qq = "SELECT titre_projet FROM projet WHERE id = ?";
-
-   db.query(qq, [id], (err, userData) => {
-     if (err) {
-       return res.status(500).json({ message: "Erreur de base de données", error: err });
-     }
-   
-     if (userData.length > 0) {
-       const tit = userData[0].titre_projet;
-
-    
-
-     if(req.body.validr=='nonvalide'){
-      const qq = "UPDATE `tache` SET `validation` = ?,`cause_responsable` = ?  WHERE projet = ?";
-  
-      db.query(qq,[ req.body.validr,req.body.cause,
-          
-        tit], (err, userData) => {
-        if (err) {
-          console.error('Error executing query:', err);
-          return res.status(500).json({ error: 'Database error' });
-        }
-    
-     })
-    }
-
- }  });
+ 
 
  
     
-    const q = "UPDATE `projet` SET `validation` = ?,`cause_responsable` = ?  WHERE id = ?";
+    const q = "UPDATE `tache` SET `validation` = ?,`cause_responsable` = ?  WHERE id = ?";
   
     db.query(q,[ req.body.validr,req.body.cause,
         

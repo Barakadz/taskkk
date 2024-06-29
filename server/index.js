@@ -12,6 +12,10 @@ import contactRoutes from "./routes/contact.js";
 
 import tacheRoutes from "./routes/tache.js";
 import validprojetRoutes from "./routes/validprojet.js";
+import validtacheRoutes from "./routes/validtache.js";
+import rhRoutes from "./routes/rh.js";
+import dgRoutes from "./routes/dg.js";
+import tousProjetValide from "./routes/validationtousprojet.js";
 
 import cookieParser from "cookie-parser";
 
@@ -43,6 +47,10 @@ app.use("/api/tache", tacheRoutes);
 app.use("/api/evaluation", evaluationRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/projetvalide", validprojetRoutes);
+app.use("/api/tachevalide", validtacheRoutes);
+app.use("/api/rh", rhRoutes);
+app.use("/api/dg", dgRoutes);
+app.use("/api/tousprojetvalidation", tousProjetValide);
 
  
 // Error handling middleware

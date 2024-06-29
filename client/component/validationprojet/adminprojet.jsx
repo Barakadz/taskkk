@@ -1,62 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-  import Tour from '../tour';
 import ModifyProject from './modifyProject';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 
 const AdminProjetVal = () => {
   const [titreProject, setTitreProject] = useState('');
-  const [descriptionProject, setdescriptionProject] = useState('');
+  const [descriptionProject, setDescriptionProject] = useState('');
   const [chefProject, setChefProject] = useState('');
   const [DateDebut, setDateDebut] = useState('');
-  const [DateFin, SetDateFin] = useState('');
+  const [DateFin, setDateFin] = useState('');
   const [Departement, setDepartement] = useState('');
   const [Filiale, setFiliale] = useState('');
   const [Participant, setParticipant] = useState('');
   const [IdPro, setIdPro] = useState('');
-  const [mailPro, setmailPro] = useState('');
+  const [mailPro, setMailPro] = useState('');
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
-  
-
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
-    let mailts = localStorage.getItem('mailtask');
+    if (!user || !user.department) {
+      console.log('User data is not available yet');
+      return;
+    }
 
     const requestData = {
-      dep:user.department
+      dep: user.department
     };
     
-    axios.post('https://task.groupe-hasnaoui.com/api/projetvalide/projetdep/', requestData, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    .then(response => {
+    try {
+      const response = await axios.post('https://task.groupe-hasnaoui.com/api/projetvalide/projetdep/', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       setData(response.data);
-    })
-    .catch(error => {
+    } catch (error) {
       console.log('There was an error!', error);
-    });
-
-
-
-
-     
+    }
   };
 
   useEffect(() => {
-    fetchData();
-    //const intervalId = setInterval(fetchData, 5000); // Fetch data every 5 seconds
-    //return () => clearInterval(intervalId); // Clear interval on component unmount
-  }, []);
+    if (user && user.department) {
+      fetchData();
+    }
+  }, [user]);
 
   const columns = [
     { field: 'id', title: 'id', hidden: true },
@@ -64,11 +56,8 @@ const AdminProjetVal = () => {
     { field: 'date_debut', title: 'Date de Début' },
     { field: 'date_fin', title: 'Date de Fin' },
     { field: 'mail', title: 'Utilisateur' },
-
-     { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' }  },
-    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' }  },
-
-    
+    { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' } },
+    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' } },
   ];
 
   const handleAddUserClick = () => {
@@ -79,17 +68,17 @@ const AdminProjetVal = () => {
     }
   };
 
-  const Modiyprojet = (id, titre_projet, description,chef_projet, date_debut, date_fin,departement, filiale, participant,mail) => {
+  const Modiyprojet = (id, titre_projet, description, chef_projet, date_debut, date_fin, departement, filiale, participant, mail) => {
     setTitreProject(titre_projet);
-    setdescriptionProject(description);
+    setDescriptionProject(description);
     setChefProject(chef_projet);
     setDateDebut(date_debut);
-    SetDateFin(date_fin);
+    setDateFin(date_fin);
     setDepartement(departement);
     setFiliale(filiale);
     setParticipant(participant);
     setIdPro(id);
-    setmailPro(mail);
+    setMailPro(mail);
 
     const modal = document.getElementById('exampleModall');
     if (modal) {
@@ -100,10 +89,18 @@ const AdminProjetVal = () => {
 
   return (
     <>
-      <ModifyProject  id={IdPro}   tire_projet={titreProject}   descri={descriptionProject}   chefp={chefProject} 
-       dadebut={DateDebut}   dafin={DateFin}dep={Departement}   filia={Filiale} par={Participant} mai={mailPro} 
-       />   
-       <ToastContainer />
+      <ModifyProject 
+        id={IdPro}
+        tire_projet={titreProject}
+        descri={descriptionProject}
+        chefp={chefProject}
+        dadebut={DateDebut}
+        dafin={DateFin}
+        dep={Departement}
+        filia={Filiale}
+        par={Participant}
+        mai={mailPro}
+      />
       <MaterialTable
         title="La liste Des Projets :"
         columns={columns}
@@ -128,15 +125,22 @@ const AdminProjetVal = () => {
           },
           {
             icon: 'edit',
-            tooltip: 'validation Projet',
+            tooltip: 'Validation Projet',
             isFreeAction: false,
-            onClick: (event, rowData) => Modiyprojet(JSON.stringify(rowData.id), JSON.stringify(rowData.titre_projet), JSON.stringify(rowData.description),
-            JSON.stringify(rowData.chef_projet), JSON.stringify(rowData.date_debut), JSON.stringify(rowData.date_fin),
-            JSON.stringify(rowData.departement), JSON.stringify(rowData.filiale), JSON.stringify(rowData.participant), JSON.stringify(rowData.mail)
-          ),
+            onClick: (event, rowData) => Modiyprojet(
+              rowData.id,
+              rowData.titre_projet,
+              rowData.description,
+              rowData.chef_projet,
+              rowData.date_debut,
+              rowData.date_fin,
+              rowData.departement,
+              rowData.filiale,
+              rowData.participant,
+              rowData.mail
+            ),
           }
         ]}
-        
         detailPanel={rowData => (
           <div style={{ marginLeft: '25px' }}>
             <p><b>Description :</b></p>
@@ -147,17 +151,9 @@ const AdminProjetVal = () => {
             <div dangerouslySetInnerHTML={{ __html: rowData.filiale }} />
             <p><b>Scope :</b></p>
             <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />
-            
-            <p><b>Scope :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />
-             <p><b>Chef de projet :</b></p>
+            <p><b>Chef de projet :</b></p>
             <div dangerouslySetInnerHTML={{ __html: rowData.chef_projet }} />
-
-
-
-
           </div>
-          
         )}
         localization={{
           body: {
