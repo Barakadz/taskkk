@@ -72,8 +72,7 @@ export default function Home() {
           }
         } catch (error) {
           console.error('Authentication error:', error);
-          router.push('/login');
-        }
+         }
       };
 
       authenticate();
