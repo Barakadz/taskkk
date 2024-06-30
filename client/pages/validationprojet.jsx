@@ -16,7 +16,39 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState(['wahiba.boukhalfa@groupe-hasnaoui.com','Ismail.kahouadji@groupe-hasnaoui.com','abdelkader.nessib@groupe-hasnaoui.com','mohamed.benzeghiba@groupe-hasnaoui.com','asmaa.ghafir@groupe-hasnaoui.com','Lakhdar.HAYANI@groupe-hasnaoui.com','Hichem.TAMERT@groupe-hasnaoui.com','Chakib.ISSAD@groupe-hasnaoui.com','Othman.NEMIR@groupe-hasnaoui.com','hakim.loukil@groupe-hasnaoui.com']);
+  const [directorsEmails, setDirectorsEmails] = useState([ {
+    "mail": "hakim.loukil@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "Othman.NEMIR@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "Chakib.ISSAD@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "Hichem.TAMERT@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "Lakhdar.HAYANI@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "asmaa.ghafir@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "mohamed.benzeghiba@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "abdelkader.nessib@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "Ismail.kahouadji@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "wahiba.boukhalfa@groupe-hasnaoui.com"
+  },
+  {
+    "mail": "abdelkader.NESSIB@groupe-hasnaoui.com"
+  },]);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {
