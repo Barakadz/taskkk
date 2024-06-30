@@ -13,77 +13,77 @@ import AdminTacheVal from "@/component/validationtache/adminprojet";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+const Home = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const [directorsEmails, setDirectorsEmails] = useState([]);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
+  // Function to fetch directors' emails
+  const fetchDirectorsEmails = async () => {
+    try {
+      const response = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
+      setDirectorsEmails(response.data.map(directeur => directeur.mail));
+    } catch (error) {
+      router.push('/login')
+    }
+  };
+
+  // Function to authenticate the user
+  const authenticateUser = async (mail, password) => {
+    const authHeader = 'Basic ' + btoa(`${mail}:${password}`);
+    const url = 'https://api.ldap.groupe-hasnaoui.com/newtask/auth';
+
+    try {
+      const response = await axios.post(url, {}, {
+        headers: { 'Authorization': authHeader }
+      });
+
+      if (!response.data.authenticated) {
+        router.push('/login');
+      } else {
+        dispatch(setUser({
+          firstName: response.data.userinfo.name,
+          lastName: response.data.userinfo.fname,
+          phoneNumber: response.data.userinfo.phonenumber,
+          mail: response.data.userinfo.mail,
+          department: response.data.userinfo.department,
+          job: response.data.userinfo.title,
+        }));
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      router.push('/login');
+    }
+  };
+
+  // Effect to check if the user email exists in the directors' emails list
   useEffect(() => {
     const userEmail = localStorage.getItem('mailtask');
     if (directorsEmails.length > 0) {
-      const exists = directorsEmails.some(email => email === userEmail);
+      const exists = directorsEmails.includes(userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-        router.push('/login');  // Redirection vers une page d'accès non autorisé
+        router.push('/login');
       }
     }
   }, [directorsEmails]);
 
+  // Effect to fetch data and authenticate the user on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
-        setDirectorsEmails(directeurResponse.data.map(directeur => directeur.mail));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    fetchDirectorsEmails();
 
     const mail = localStorage.getItem('mailtask');
     const password = localStorage.getItem('passwordtask');
 
     if (mail && password) {
-      const authHeader = 'Basic ' + btoa(`${mail}:${password}`);
-      const url = 'https://api.ldap.groupe-hasnaoui.com/newtask/auth';
-
-      const authenticate = async () => {
-        try {
-          const response = await axios.post(url, {}, {
-            headers: {
-              'Authorization': authHeader
-            }
-          });
-          const isAuthenticated = response.data.authenticated;
-
-          if (!isAuthenticated) {
-            router.push('/login');
-          } else {
-            dispatch(setUser({
-              firstName: response.data.userinfo.name,
-              lastName: response.data.userinfo.fname,
-              phoneNumber: response.data.userinfo.phonenumber,
-              mail: response.data.userinfo.mail,
-              department: response.data.userinfo.department,
-              job: response.data.userinfo.title,
-             }));
-          }
-        } catch (error) {
-          console.error('Authentication error:', error);
-          router.push('/login');
-        }
-      };
-
-      authenticate();
+      authenticateUser(mail, password);
     } else {
       router.push('/login');
     }
-  }, [dispatch, router]);
+  }, []);
 
- 
   return (
     <>
       <Head>
@@ -98,15 +98,17 @@ export default function Home() {
       </Head>
       <main style={{ padding: '0', background: "#f5f5f5" }}>
         <div id="viewport">
-          {userEmailExists ? (
+          {userEmailExists && (
             <>
               <SideBarDashboard />
               <Tour />
               <AdminTacheVal />
             </>
-          ) : null}
+          )}
         </div>
       </main>
     </>
   );
 }
+
+export default Home;
