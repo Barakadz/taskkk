@@ -50,6 +50,7 @@ const AddGalButtonEmploye = () => {
 
   const onSubmit = async (values, { resetForm }) => {
   
+    const employeAll = values.employe.map(item => item.value).join('-');
 
 
 
