@@ -16,6 +16,9 @@ import validtacheRoutes from "./routes/validtache.js";
 import rhRoutes from "./routes/rh.js";
 import dgRoutes from "./routes/dg.js";
 import tousProjetValide from "./routes/validationtousprojet.js";
+import tousPrimeValide from "./routes/prime.js";
+
+
 
 import cookieParser from "cookie-parser";
 
@@ -51,6 +54,7 @@ app.use("/api/tachevalide", validtacheRoutes);
 app.use("/api/rh", rhRoutes);
 app.use("/api/dg", dgRoutes);
 app.use("/api/tousprojetvalidation", tousProjetValide);
+app.use("/api/primeee", tousPrimeValide);
 
  
 // Error handling middleware

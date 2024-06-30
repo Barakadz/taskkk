@@ -52,7 +52,7 @@ export const AddTache = (req, res) => {
 
       const insertQuery = `
         INSERT INTO tache (
-          titre_tache, level, description, equipe, date_debut, date_fin, etat, mail, projet, departement_user, validation, date, cause_responsable,validation_dg
+          titre_tache, level, description, equipe, date_debut, date_fin, etat, mail, projet, departement_user, validation, date, cause_responsable,validation_dg,username,mois
         ) VALUES (?)`;
 
       const values = [
@@ -69,7 +69,9 @@ export const AddTache = (req, res) => {
         'en cours',
         formattedDate,
         'en cours',
-        'en cours'
+        'en cours',
+        req.body.username,
+        req.body.mois
       ];
 
       db.query(insertQuery, [values], (err, data) => {

@@ -1,37 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-  import Tour from '../tour';
-import AddGalButtonEmploye from './addGalButton';
-import ModifyProject from './modifyProject';
+ import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 
-const AdminEmploye = () => {
-  const [username, setUsername] = useState('');
-  const [salaire, setSailaire] = useState('');
-  const [IdGal, setId] = useState('');
+const AdminPrimeValUserRh = () => {
+ 
+  const [IdTach, setIdTache] = useState('');
+  const [mois, setMois] = useState('');
+  const [level, setLevel] = useState('');
+
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
+    if (!user || !user.department) {
+      console.log('User data is not available yet');
+      return;
+    }
+
+    const requestData = {
+      mail: user.firstName+' '+user.lastName
+    };
+    
     try {
-      const response = await axios.get('https://task.groupe-hasnaoui.com/api/employe@groupe');
+      const response = await axios.get('https://task.groupe-hasnaoui.com/api/primeee/getAllPrimegsh' , {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      console.log('There was an error!', error);
     }
   };
-
+ 
   useEffect(() => {
-    fetchData();
-   }, []);
+    if (user && user.department) {
+      fetchData();
+    }
+  }, [user]);
 
   const columns = [
     { field: 'id', title: 'id', hidden: true },
-    { field: 'username', title: 'Employe' },
-    { field: 'salaire', title: 'Salaire' },
-   
-   ];
+    { field: 'username', title: 'Personne' },
+
+      { field: 'mois', title: 'Mois' },
+    
+     { field: 'prime', title: 'Prime', cellStyle: { backgroundColor: '#A5D721' } },
+     { field: 'salaire', title: 'Salaire' },
+  ];
 
   const handleAddUserClick = () => {
     const modal = document.getElementById('exampleModal');
@@ -40,32 +61,30 @@ const AdminEmploye = () => {
       modal.style.display = 'block';
     }
   };
-
-  const ModiyGalerie = (id, username, salaire) => {
-    setUsername(username);
-    setSailaire(salaire);
-    setId(id);
-     const modal = document.getElementById('exampleModall');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
-    }
-  };
+ 
 
   return (
     <>
-    <ModifyProject id={IdGal} salaire={salaire} username={username}/>
-    <AddGalButtonEmploye/>
-        <ToastContainer />
+ { /*   <ModifyProject 
+        id={IdPro}
+        tire_projet={titreProject}
+        descri={descriptionProject}
+        chefp={chefProject}
+        dadebut={DateDebut}
+        dafin={DateFin}
+        dep={Departement}
+        filia={Filiale}
+        par={Participant}
+        mai={mailPro}
+      />*/} 
       <MaterialTable
-        title="La liste Des Employes :"
+        title="La liste Des Primes :"
         columns={columns}
         data={data}
         options={{
           search: true,
           paging: true,
-          filtering: true,
-          exportButton: true,
+           exportButton: true,
           headerStyle: {
             backgroundColor: '#01579b',
             color: '#FFF'
@@ -79,34 +98,13 @@ const AdminEmploye = () => {
             isFreeAction: true,
             onClick: () => fetchData(),
           },
-          {
-            icon: 'edit',
-            tooltip: 'Modifier Projet',
-            isFreeAction: false,
-            onClick: (event, rowData) => ModiyGalerie(JSON.stringify(rowData.id), JSON.stringify(rowData.username), JSON.stringify(rowData.salaire)),
-          }
+          
         ]}
-        editable={{
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                const dataDelete = [...data];
-                const index = oldData.tableData.id;
-                dataDelete.splice(index, 1);
-                setData([...dataDelete]);
-                const id = oldData.id;
-                axios.delete(`https://task.groupe-hasnaoui.com/api/employe@groupe/${id}`)
-                  .then(response => {
-                    toast.success(response.data);
-                  })
-                  .catch(error => {
-                    toast.error(error);
-                  });
-                resolve();
-              }, 1000);
-            }),
-        }}
-      
+        detailPanel={rowData => (
+          <div style={{ marginLeft: '25px' }}>
+             
+          </div>
+        )}
         localization={{
           body: {
             emptyDataSourceMessage: "Pas d'enregistrement à afficher",
@@ -159,4 +157,4 @@ const AdminEmploye = () => {
   );
 };
 
-export default AdminEmploye;
+export default AdminPrimeValUserRh;

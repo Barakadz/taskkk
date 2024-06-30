@@ -73,35 +73,37 @@ import bcrypt from "bcryptjs";
   };
 
 
-
-export const DeleteProjet = (req, res) => {
-
+  export const DeleteProjet = (req, res) => {
     const id = req.params.id;
-
+  
     if (!id) {
       return res.status(400).json({ error: 'ID is required' });
     }
   
+    const deleteTasksQuery = "DELETE FROM `tache` WHERE projet = ?";
+    const deleteProjectQuery = "DELETE FROM `projet` WHERE id = ?";
   
-
-
-
-//remove from bdd
-    const q = "DELETE FROM `projet`  WHERE id = ?";
-  
-    db.query(q, [id], (err, userData) => {
+    db.query(deleteTasksQuery, [id], (err, taskData) => {
       if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({ error: 'Database error' });
       }
   
-      if (userData.affectedRows === 0) {
-        return res.status(404).json({ error: 'Projet not found' });
-      }
+      db.query(deleteProjectQuery, [id], (err, projectData) => {
+        if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).json({ error: 'Database error' });
+        }
   
-      return res.status(200).json({ message: 'Projet deleted successfully' });
+        if (projectData.affectedRows === 0) {
+          return res.status(404).json({ error: 'Projet not found' });
+        }
+  
+        return res.status(200).json({ message: 'Projet deleted successfully' });
+      });
     });
-}
+  };
+  
 export const Projet = (req, res) => {
 
   

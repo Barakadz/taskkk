@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { setUser } from "@/component/redux/userSlice";
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import AdminPrimeVal from "@/component/prime/adminprojet";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +34,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
+        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/rh/rh');
         setDirectorsEmails(directeurResponse.data.map(directeur => directeur.mail));
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -82,7 +83,7 @@ export default function Home() {
     }
   }, [dispatch, router]);
 
-   
+  
   return (
     <>
       <Head>
@@ -97,13 +98,12 @@ export default function Home() {
       </Head>
       <main style={{ padding: '0', background: "#f5f5f5" }}>
         <div id="viewport">
-          
-            <>
+             <>
               <SideBarDashboard />
               <Tour />
-              <AdminProjetVal />
+              <AdminPrimeVal />
             </>
-           
+         
         </div>
       </main>
     </>

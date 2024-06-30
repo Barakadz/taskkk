@@ -87,7 +87,7 @@ export default function Home() {
 
   useEffect(() => {
     if (  !user.mail || !user.firstName || !user.lastName) {
-      router.push('/login');
+   //   router.push('/login');
     }
   }, [  user.mail, user.firstName, user.lastName, router]);
 

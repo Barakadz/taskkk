@@ -13,10 +13,7 @@ import bcrypt from "bcryptjs";
 
 // Now you can access process.env.JWT_SECRET
 
-
- 
-export const AddEmploye = (req, res) => {
-  //CHECK USER IF EXISTS
+//CHECK USER IF EXISTS
 
  // const q = "SELECT * FROM users WHERE email = ?";
 
@@ -27,26 +24,44 @@ export const AddEmploye = (req, res) => {
     //Hash the password
    // const salt = bcrypt.genSaltSync(10);//method of hash
    // const hashedPassword = bcrypt.hashSync(req.body.Password, salt);
-     const currentDate = moment();
-    const Date=currentDate.format('DD/MM/YYYY  HH:mm:ss');
-  
-    const q =
-      "INSERT INTO `employe`(  `username`, `salaire`, `prime`, `trimestre`)   VALUE (?)";
+    
+ 
+export const AddEmploye = (req, res) => {
+  // Get current date and time
+  const currentDate = moment();
+  const Date = currentDate.format('DD/MM/YYYY HH:mm:ss');
 
-    const values = [
-      req.body.username,
-      req.body.salaire,
-      '0',
-      req.body.trimestre
+  // SQL query to check if the employee already exists
+  const checkQuery = "SELECT * FROM `employe` WHERE `username` = ?";
 
+  db.query(checkQuery, [req.body.username], (err, results) => {
+      if (err) {
+          return res.status(500).json(err);
+      }
 
-     ];
+      // If employee exists, return a message
+      if (results.length > 0) {
+          return res.status(400).json("Employe already exists.");
+      }
 
-    db.query(q, [values], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json("Employe  has been created.");
-    });
- // });
+      // If employee does not exist, proceed to insert
+      const insertQuery = 
+          "INSERT INTO `employe` (`username`, `salaire`, `prime`, `trimestre`) VALUES (?)";
+
+      const values = [
+          req.body.username,
+          req.body.salaire,
+          '0', // prime
+          req.body.trimestre
+      ];
+
+      db.query(insertQuery, [values], (err, data) => {
+          if (err) {
+              return res.status(500).json(err);
+          }
+          return res.status(200).json("Employe has been created.");
+      });
+  });
 };
 
 
@@ -154,4 +169,23 @@ export const UpdateEmploye = (req, res) => {
 
 }
 
+
+
  
+  export const mailPrime = (req, res) => {
+
+  
+    
+    const q = "SELECT * from tache";
+    
+    // Query the database
+    db.query(q, (err, data) => {
+      if (err) {
+        console.error("Database query error:", err);
+        return res.status(500).json({ error: "Database query error" });
+      }
+      return res.status(200).json(data);
+    });
+  }
+  
+   

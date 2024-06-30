@@ -277,8 +277,7 @@ const ModifyTache = ({ id, titre_tach,descrip, niveau, DateDebut, dateFin, projt
                                                     <ErrorMessage name="description" component="div" className="text-danger" />
                                                 </div>
                                             </div>
-                                            <marquee style={{color:'red',fontWeight:'bold'}}>Veuillez noter que le niveau affecté à une tâche influence le salaire de vos employés comme suit : Niveau 1 - 5%, Niveau 2 - 10%, Niveau 3 - 15%, Niveau 4 - 20%, Niveau 5 - 25%.</marquee>
-
+ 
                                             <div className="col-lg-6">
                                                 <label htmlFor="level" className="form-label">Niveau de tâche <b className='text-danger'>*</b></label>
                                                 <Field

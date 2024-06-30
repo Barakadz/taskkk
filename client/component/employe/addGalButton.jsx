@@ -16,8 +16,7 @@ const AddGalButtonEmploye = () => {
   const router = useRouter();
   const user = useSelector((state) => state.user);
   const [iofg, setEmp] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+ 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -50,10 +49,9 @@ const AddGalButtonEmploye = () => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
-    setIsSubmitting(true);
-
+ 
     const employeAll = values.employe.map(item => item.value).join('-');
-    const apiUrl = 'https://task.groupe-hasnaoui.com/api/projet/add';
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/employe@groupe/add';
     const requestData = {
       salaire: values.salaireEm,
       username: employeAll,
@@ -76,16 +74,15 @@ const AddGalButtonEmploye = () => {
       }
 
       resetForm();
-      toast.success('Le Projet a été bien Ajouté');
+      toast.success('Employé a été bien Ajouté');
       setTimeout(() => {
         window.location.href = '';
       }, 3000);
     } catch (error) {
       console.error('An error occurred:', error);
-      toast.error(`Error: ${error.message}`);
+      toast.error(`Error: ${JSON.stringify(error.message)}`);
     } finally {
-      setIsSubmitting(false);
-    }
+     }
   };
 
   const handleCloseModalClick = () => {
@@ -145,8 +142,8 @@ const AddGalButtonEmploye = () => {
                           </div>
                         </div>
                       </div>
-                      <button type="submit" className="btn btn-primary" style={{ marginTop: '250px' }} disabled={!isValid || isSubmitting}>
-                        {isSubmitting ? 'En cours...' : 'Enregistrer'}
+                      <button type="submit" className="btn btn-primary" style={{ marginTop: '250px' }}  >
+                        Enregistrer
                       </button>
                     </Form>
                   )}

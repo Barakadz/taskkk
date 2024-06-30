@@ -9,11 +9,14 @@ import { useRouter } from 'next/router';
 import { setUser } from "@/component/redux/userSlice";
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import AdminPrimeVal from "@/component/prime/adminprojet";
+import AdminPrimeValUser from "@/component/primeuser/adminprojet";
+import AdminPrimeValUserRh from "@/component/primeuserrh/adminprojet";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const router = useRouter();
+ /* const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const [directorsEmails, setDirectorsEmails] = useState([]);
@@ -25,7 +28,7 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-        router.push('/login');  // Redirection vers une page d'accès non autorisé
+        router.push('/projet');  // Redirection vers une page d'accès non autorisé
       }
      }
   }, [directorsEmails]);
@@ -82,7 +85,7 @@ export default function Home() {
     }
   }, [dispatch, router]);
 
-   
+   */
   return (
     <>
       <Head>
@@ -97,13 +100,12 @@ export default function Home() {
       </Head>
       <main style={{ padding: '0', background: "#f5f5f5" }}>
         <div id="viewport">
-          
-            <>
+             <>
               <SideBarDashboard />
               <Tour />
-              <AdminProjetVal />
+              <AdminPrimeValUserRh />
             </>
-           
+         
         </div>
       </main>
     </>

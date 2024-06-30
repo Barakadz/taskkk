@@ -148,6 +148,11 @@ const validationSchema = Yup.object().shape({
     .min(Yup.ref('dateDebut'), 'La date de fin du tache ne peut pas être avant la date de début du tache')
     .max(new Date(dateFinProject), 'La date de fin doit être avant la fin du projet'),
  
+
+ 
+
+
+
      projet: Yup.array()
       .test('unique', 'Vous ne pouvez sélectionner qu\'un seul projet', (value) => {
         return value.length <= 1;
@@ -166,8 +171,43 @@ validationSchema.fields.dateFin = validationSchema.fields.dateFin.min(new Date(n
     
     const ParticipantAll = values.participant.map(item => item.value).join('-');
     const ProjetAll = values.projet.map(item => item.value).join('-');
- 
- 
+ // Utility function to get month from date
+ const getMonthFromDate = (date) => {
+  const month = new Date(date).getMonth() + 1; // getMonth() returns 0-11, so add 1 to make it 1-12
+  return month;
+};
+
+// Function to calculate the number of days the task spans in each month
+const calculateMonthWithMostDays = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const startMonth = start.getMonth() + 1; // getMonth() returns 0-11, so add 1 to make it 1-12
+  const endMonth = end.getMonth() + 1;
+
+  const startMonthDays = new Date(start.getFullYear(), startMonth, 0).getDate() - start.getDate() + 1;
+  const endMonthDays = end.getDate();
+
+  if (startMonthDays >= endMonthDays) {
+    return startMonth;
+  } else {
+    return endMonth;
+  }
+};
+
+// Function to convert month number to month name
+const getMonthName = (monthNumber) => {
+  const monthNames = [
+    "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+    "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+  ];
+  return monthNames[monthNumber - 1];
+};
+
+// Determine which month has the most days of the task
+const monthNumber = calculateMonthWithMostDays(values.dateDebut, values.dateFin);
+const mois = getMonthName(monthNumber);
+
     const apiUrl = 'https://task.groupe-hasnaoui.com/api/tache/add';
     const requestData = {
       level: values.niveau,
@@ -179,7 +219,9 @@ validationSchema.fields.dateFin = validationSchema.fields.dateFin.min(new Date(n
       equipe: ParticipantAll,
       mail: user.mail,
       projet: idProject,
-      departement_user: user.department
+      departement_user: user.department,
+      username:user.firstName+' '+user.lastName,
+      mois: mois, // Set the mois value here
     };
   const mailsend=async() =>{
     const apiUrll = 'https://www.groupe-hasnaoui.com/mailtache.php';

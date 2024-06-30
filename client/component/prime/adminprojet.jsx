@@ -1,37 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import MaterialTable from 'material-table';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-  import Tour from '../tour';
-import AddGalButtonEmploye from './addGalButton';
 import ModifyProject from './modifyProject';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 
-const AdminEmploye = () => {
-  const [username, setUsername] = useState('');
-  const [salaire, setSailaire] = useState('');
-  const [IdGal, setId] = useState('');
+const AdminPrimeVal = () => {
+ 
+  const [IdTach, setIdTache] = useState('');
+  const [mois, setMois] = useState('');
+  const [level, setLevel] = useState('');
+
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
+    if (!user || !user.department) {
+      console.log('User data is not available yet');
+      return;
+    }
+
+    const requestData = {
+      dep: user.department
+    };
+    
     try {
-      const response = await axios.get('https://task.groupe-hasnaoui.com/api/employe@groupe');
+      const response = await axios.get('https://task.groupe-hasnaoui.com/api/primeee/primgshahasnaoui', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      console.log('There was an error!', error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-   }, []);
+    if (user && user.department) {
+      fetchData();
+    }
+  }, [user]);
 
   const columns = [
     { field: 'id', title: 'id', hidden: true },
-    { field: 'username', title: 'Employe' },
-    { field: 'salaire', title: 'Salaire' },
-   
-   ];
+    { field: 'titre_tache', title: 'Titre de Tache' },
+    { field: 'username', title: 'Utilisateur' },
+    { field: 'equipe', title: 'Equipe' },
+    { field: 'mois', title: 'Mois' },
+    { field: 'level', title: 'Level' , render: rowData => (
+      <div style={{ backgroundColor: rowData.level === '5' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
+        {rowData.level}
+      </div>
+    )
+  },  
+
+     { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' } },
+  ];
 
   const handleAddUserClick = () => {
     const modal = document.getElementById('exampleModal');
@@ -41,24 +69,63 @@ const AdminEmploye = () => {
     }
   };
 
-  const ModiyGalerie = (id, username, salaire) => {
-    setUsername(username);
-    setSailaire(salaire);
-    setId(id);
-     const modal = document.getElementById('exampleModall');
-    if (modal) {
-      modal.classList.add('show');
-      modal.style.display = 'block';
+  const Modiyprojet =async (id,moiss,levell ,user,equip ) => {
+    setIdTache(id)
+    setMois(moiss)
+    setLevel(levell)
+    
+    
+    
+
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/primeee/add';
+    const requestData = {
+      username: user,
+      mois: moiss,
+      level: levell,
+      prime: '3000',
+      equipe:equip
+     
+    };
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data);
+      }
+
+     
+
+    
+    } catch (error) {
+     
+
     }
   };
 
   return (
     <>
-    <ModifyProject id={IdGal} salaire={salaire} username={username}/>
-    <AddGalButtonEmploye/>
-        <ToastContainer />
+ { /*   <ModifyProject 
+        id={IdPro}
+        tire_projet={titreProject}
+        descri={descriptionProject}
+        chefp={chefProject}
+        dadebut={DateDebut}
+        dafin={DateFin}
+        dep={Departement}
+        filia={Filiale}
+        par={Participant}
+        mai={mailPro}
+      />*/} 
       <MaterialTable
-        title="La liste Des Employes :"
+        title="La liste Des Primes :"
         columns={columns}
         data={data}
         options={{
@@ -81,32 +148,23 @@ const AdminEmploye = () => {
           },
           {
             icon: 'edit',
-            tooltip: 'Modifier Projet',
+            tooltip: 'Validation Projet',
             isFreeAction: false,
-            onClick: (event, rowData) => ModiyGalerie(JSON.stringify(rowData.id), JSON.stringify(rowData.username), JSON.stringify(rowData.salaire)),
+            onClick: (event, rowData) => Modiyprojet(
+              rowData.id,
+              rowData.mois,
+              rowData.level,
+              rowData.username,
+              rowData.equipe,
+            
+            ),
           }
         ]}
-        editable={{
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                const dataDelete = [...data];
-                const index = oldData.tableData.id;
-                dataDelete.splice(index, 1);
-                setData([...dataDelete]);
-                const id = oldData.id;
-                axios.delete(`https://task.groupe-hasnaoui.com/api/employe@groupe/${id}`)
-                  .then(response => {
-                    toast.success(response.data);
-                  })
-                  .catch(error => {
-                    toast.error(error);
-                  });
-                resolve();
-              }, 1000);
-            }),
-        }}
-      
+        detailPanel={rowData => (
+          <div style={{ marginLeft: '25px' }}>
+             
+          </div>
+        )}
         localization={{
           body: {
             emptyDataSourceMessage: "Pas d'enregistrement à afficher",
@@ -159,4 +217,4 @@ const AdminEmploye = () => {
   );
 };
 
-export default AdminEmploye;
+export default AdminPrimeVal;

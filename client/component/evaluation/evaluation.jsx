@@ -28,7 +28,7 @@ const Evaluation = () => {
 
 
     
-    const apiUrl = 'https://task.groupe-hasnaoui.com//api/evaluation/add';
+    const apiUrl = 'https://task.groupe-hasnaoui.com/api/evaluation/add';
     const requestData = {
       note:values.rating,
       commentaire:values.commentaires,
