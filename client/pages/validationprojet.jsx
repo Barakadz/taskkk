@@ -16,7 +16,7 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState([ ]);
+  const [directorsEmails, setDirectorsEmails] = useState([]);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {
@@ -25,12 +25,22 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-        }
+        router.push('/login');  // Redirection vers une page d'accès non autorisé
+      }
      }
   }, [directorsEmails]);
 
   useEffect(() => {
-    
+    const fetchData = async () => {
+      try {
+        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
+        setDirectorsEmails(directeurResponse.data.map(directeur => directeur.mail));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
 
     const mail = localStorage.getItem('mailtask');
     const password = localStorage.getItem('passwordtask');
@@ -62,12 +72,13 @@ export default function Home() {
           }
         } catch (error) {
           console.error('Authentication error:', error);
-         }
+          router.push('/login');
+        }
       };
 
       authenticate();
     } else {
-      //router.push('/login');
+      router.push('/login');
     }
   }, [dispatch, router]);
 

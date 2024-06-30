@@ -17,7 +17,7 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState(['']);
+  const [directorsEmails, setDirectorsEmails] = useState([]);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,8 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-       }
+        router.push('/login');  // Redirection vers une page d'accès non autorisé
+      }
     }
   }, [directorsEmails]);
 
@@ -72,7 +73,8 @@ export default function Home() {
           }
         } catch (error) {
           console.error('Authentication error:', error);
-         }
+          router.push('/login');
+        }
       };
 
       authenticate();

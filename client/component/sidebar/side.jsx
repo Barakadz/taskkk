@@ -97,12 +97,14 @@ const Side = () => {
           }
         } catch (error) {
           console.error('Authentication error:', error);
-         }
+          router.push('/login');
+        }
       };
 
       authenticate();
     } else {
-     }
+      router.push('/login');
+    }
   }, [dispatch, router]);
 
   return (
