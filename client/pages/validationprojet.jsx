@@ -16,7 +16,7 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState([]);
+  const [directorsEmails, setDirectorsEmails] = useState(['wahiba.boukhalfa@groupe-hasnaoui.com','Ismail.kahouadji@groupe-hasnaoui.com','abdelkader.nessib@groupe-hasnaoui.com','mohamed.benzeghiba@groupe-hasnaoui.com','asmaa.ghafir@groupe-hasnaoui.com','Lakhdar.HAYANI@groupe-hasnaoui.com','Hichem.TAMERT@groupe-hasnaoui.com','Chakib.ISSAD@groupe-hasnaoui.com','Othman.NEMIR@groupe-hasnaoui.com','hakim.loukil@groupe-hasnaoui.com']);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {
@@ -25,21 +25,13 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
+        router.push('/login')
        }
      }
   }, [directorsEmails]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const directeurResponse = await axios.get('https://task.groupe-hasnaoui.com/api/directeur/');
-        setDirectorsEmails(directeurResponse.data.map(directeur => directeur.mail));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    
 
     const mail = localStorage.getItem('mailtask');
     const password = localStorage.getItem('passwordtask');

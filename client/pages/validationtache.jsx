@@ -26,6 +26,7 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
+        router.push('/login')
        }
     }
   }, [directorsEmails]);
