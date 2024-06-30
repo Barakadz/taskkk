@@ -17,7 +17,7 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState(['','','','','','']);
+  const [directorsEmails, setDirectorsEmails] = useState(['']);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {

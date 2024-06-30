@@ -16,39 +16,7 @@ export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [directorsEmails, setDirectorsEmails] = useState([ {
-    "mail": "hakim.loukil@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "Othman.NEMIR@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "Chakib.ISSAD@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "Hichem.TAMERT@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "Lakhdar.HAYANI@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "asmaa.ghafir@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "mohamed.benzeghiba@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "abdelkader.nessib@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "Ismail.kahouadji@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "wahiba.boukhalfa@groupe-hasnaoui.com"
-  },
-  {
-    "mail": "abdelkader.NESSIB@groupe-hasnaoui.com"
-  },]);
+  const [directorsEmails, setDirectorsEmails] = useState([ ]);
   const [userEmailExists, setUserEmailExists] = useState(false);
 
   useEffect(() => {
@@ -57,8 +25,7 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-        router.push('/login')
-       }
+        }
      }
   }, [directorsEmails]);
 
