@@ -285,7 +285,7 @@ const ModifyTache = ({ id, titre_tach,descrip, niveau, DateDebut, dateFin, projt
                                                     component={CustomSelect}
                                                     options={levelOptions}
                                                     isMulti={true}
-                                                    isDisable={true}
+                                                    isDisable={false}
                                                 />
                                                 <ErrorMessage name="level" component="div" className="text-danger" />
                                             </div>
