@@ -124,8 +124,8 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/employe@2222">
-                <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
+              <Link legacyBehavior href="/employe">
+                <li className={router.pathname === '/employe' ? 'act' : ''}>
                   <div className="flex flex-row">
                     <GrValidate color="white" fontSize={20} className="mr-4" />
                     &nbsp; &nbsp;Employé
@@ -203,8 +203,8 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/employe@2222">
-                <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
+              <Link legacyBehavior href="/employe">
+                <li className={router.pathname === '/employe' ? 'act' : ''}>
                   <div className="flex flex-row">
                     <GrValidate color="white" fontSize={20} className="mr-4" />
                     &nbsp; &nbsp;Employé
