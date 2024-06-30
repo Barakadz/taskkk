@@ -25,8 +25,7 @@ export default function Home() {
       const exists = directorsEmails.some(email => email === userEmail);
       setUserEmailExists(exists);
       if (!exists) {
-        router.push('/login');  // Redirection vers une page d'accès non autorisé
-      }
+       }
      }
   }, [directorsEmails]);
 
@@ -77,7 +76,7 @@ export default function Home() {
 
       authenticate();
     } else {
-      router.push('/login');
+      //router.push('/login');
     }
   }, [dispatch, router]);
 
