@@ -27,10 +27,7 @@ import bcrypt from "bcryptjs";
     
  
 export const AddEmploye = (req, res) => {
-  // Get current date and time
-  const currentDate = moment();
-  const Date = currentDate.format('DD/MM/YYYY HH:mm:ss');
-
+ 
   // SQL query to check if the employee already exists
   const checkQuery = "SELECT * FROM `employe` WHERE `username` = ?";
 
@@ -46,13 +43,11 @@ export const AddEmploye = (req, res) => {
 
       // If employee does not exist, proceed to insert
       const insertQuery = 
-          "INSERT INTO `employe` (`username`, `salaire`, `prime`, `trimestre`) VALUES (?)";
+          "INSERT INTO `employe` (`username`, `salaire`) VALUES (?)";
 
       const values = [
           req.body.username,
-          req.body.salaire,
-          '0', // prime
-          req.body.trimestre
+          req.body.salaire 
       ];
 
       db.query(insertQuery, [values], (err, data) => {
