@@ -16,10 +16,19 @@ const Side = () => {
 
   const [directorsEmails, setDirectorsEmails] = useState([]);
   const [dgEmails, setDgEmails] = useState([]);
+  const [rhEmails, setRhEmails] = useState([]);
 
   const [userEmailExists, setUserEmailExists] = useState(false);
   const [userEmailExistss, setUserEmailExistss] = useState(false);
   const [userEmailDg, setUserEmailDg] = useState(false);
+
+  useEffect(() => {
+    const userEmail = user.mail;
+    if (rhEmails.length > 0) {
+      const exists = rhEmails.some(email => email === userEmail);
+      setUserEmailExistss(exists);
+    }
+  }, [rhEmails, user.mail]);
 
   useEffect(() => {
     const userEmail = user.mail;
@@ -36,6 +45,7 @@ const Side = () => {
       setUserEmailExists(exists);
     }
   }, [directorsEmails, user.mail]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -45,9 +55,8 @@ const Side = () => {
         const userEmailDg = await axios.get('https://task.groupe-hasnaoui.com/api/dg/');
         setDgEmails(userEmailDg.data.map(directeur => directeur.mail));
 
-
         const rhResponse = await axios.get('https://task.groupe-hasnaoui.com/api/rh/rh');
-        setUserEmailExistss(rhResponse.data.some(item => item.mail === user.mail));
+        setRhEmails(rhResponse.data.map(item => item.mail));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -107,15 +116,30 @@ const Side = () => {
         <ul className="nav">
           {userEmailExistss && (
             <>
-             <Link legacyBehavior href="/employe@2222">
-             <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
-               <div className="flex flex-row">
-                 <GrValidate color="white" fontSize={20} className="mr-4" />
-                 &nbsp; &nbsp;Employé
-               </div>
-             </li>
-           </Link>
-        
+    <Link legacyBehavior href="/primerhusergsh">
+                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Tous les primes du GSH
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/employe@2222">
+                <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Employé
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/primeee">
+                <li className={router.pathname === '/primeee' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Calculer des primes 
+                  </div>
+                </li>
+              </Link>
               <Link legacyBehavior href="/projet">
                 <li className={router.pathname === '/projet' ? 'act projet-step' : 'projet-step'}>
                   <div className="flex flex-row">
@@ -140,7 +164,6 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-             
               <Link legacyBehavior href="/contact">
                 <li className={router.pathname === '/contact' ? 'act ' : ''}>
                   <div className="flex flex-row">
@@ -149,39 +172,56 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/contact">
-                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+            
+              <Link legacyBehavior href="/prime">
+                <li className={router.pathname === '/prime' ? 'act' : ''}>
                   <div className="flex flex-row">
-                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                    &nbsp; &nbsp; Réclamation
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Prime
                   </div>
                 </li>
               </Link>
             </>
-            
+          )}
+        
+
+          {userEmailDg && (
+            <>
+              <Link legacyBehavior href="/validationtousprojet">
+                <li className={router.pathname === '/validationtousprojet' ? 'act ' : ''}>
+                  <div className="flex flex-row">
+                    <FaUser color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Validation des Projets GSH
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/primerhusergsh">
+                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Tous les primes du GSH
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/employe@2222">
+                <li className={router.pathname === '/employe@2222' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Employé
+                  </div>
+                </li>
+              </Link>
+            </>
           )}
 
-{userEmailDg && (
-  <>
-   <Link legacyBehavior href="/validationtousprojet">
-    <li className={router.pathname === '/validationtousprojet' ? 'act ' : ''}>
-      <div className="flex flex-row">
-        <FaUser color="white" fontSize={20} className="mr-4" />
-        &nbsp; &nbsp;Validation des Projets GSH
-      </div>
-    </li>
-  </Link>
-  </>
- 
-) }
           {userEmailExists && (
             <>
-         
+            
               <Link legacyBehavior href="/validationprojet">
                 <li className={router.pathname === '/validationprojet' ? 'act ' : ''}>
                   <div className="flex flex-row">
                     <FaUser color="white" fontSize={20} className="mr-4" />
-                    &nbsp; &nbsp;validation des projet
+                    &nbsp; &nbsp;validation des projets de département
                   </div>
                 </li>
               </Link>
@@ -189,12 +229,10 @@ const Side = () => {
                 <li className={router.pathname === '/validationtache' ? 'act ' : ''}>
                   <div className="flex flex-row">
                     <FaUser color="white" fontSize={20} className="mr-4" />
-                    &nbsp; &nbsp;validation des tache
+                    &nbsp; &nbsp;validation des taches de département
                   </div>
                 </li>
               </Link>
-            
-
               <Link legacyBehavior href="/evaluation">
                 <li className={router.pathname === '/evaluation' ? 'act evaluation-step' : 'evaluation-step'}>
                   <div className="flex flex-row">
@@ -213,17 +251,10 @@ const Side = () => {
               </Link>
             </>
           )}
-          {!userEmailExists && !userEmailExistss && (
+
+          {!userEmailExists && !userEmailExistss && !userEmailDg && (
             <>
-             
-              <Link legacyBehavior href="">
-                <li className={router.pathname === '' ? 'act ' : ''}>
-                  <div className="flex flex-row">
-                    <AiOutlineFundProjectionScreen color="white" fontSize={20} className="mr-4" />
-                    &nbsp; &nbsp;Dashboard
-                  </div>
-                </li>
-              </Link>
+            
               <Link legacyBehavior href="/projet">
                 <li className={router.pathname === '/projet' ? 'act projet-step' : 'projet-step'}>
                   <div className="flex flex-row">
@@ -248,7 +279,6 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-             
               <Link legacyBehavior href="/contact">
                 <li className={router.pathname === '/contact' ? 'act ' : ''}>
                   <div className="flex flex-row">
@@ -257,14 +287,15 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/contact">
-                <li className={router.pathname === '/contact' ? 'act ' : ''}>
+              <Link legacyBehavior href="/prime">
+                <li className={router.pathname === '/prime' ? 'act' : ''}>
                   <div className="flex flex-row">
-                    <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
-                    &nbsp; &nbsp; Réclamation
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Prime
                   </div>
                 </li>
               </Link>
+             
             </>
           )}
         </ul>
