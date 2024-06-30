@@ -57,6 +57,7 @@ const AddGalButton = () => {
     { value: 'DCO', label: 'DCO' },
     { value: 'DCG', label: 'DCG' },
     { value: 'DMC', label: 'DMC' },
+     { value: 'DFC', label: 'DFC' },
   ];
 
   const [optionsChef, setOptionsChef] = useState([]);
