@@ -49,41 +49,39 @@ const AddGalButtonEmploye = () => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
- 
-    const employeAll = values.employe.map(item => item.value).join('-');
-    const apiUrl = 'https://task.groupe-hasnaoui.com/api/employe@groupe/add';
-    const requestData = {
-      salaire: values.salaireEm,
-      username: employeAll 
+  
 
-    };
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data);
-      }
 
-      resetForm();
-      toast.success('Employé a été bien Ajouté');
-      setTimeout(() => {
-        window.location.href = '';
-      }, 3000);
-    } catch (error) {
-      console.error('An error occurred:', error);
-      toast.error(`Error: ${JSON.stringify(error.message)}`);
-    } finally {
-     }
+    
+  const apiUrl = 'https://task.groupe-hasnaoui.com/api/employe@groupe/add';
+  const requestData = {
+    salaire: values.salaireEm,
+    username: employeAll 
+
   };
 
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+toast.success('Employe à été bien ajouter')
+resetForm(initialValues); // Reset form fields
+
+      })
+    .catch(error => {
+     });
   const handleCloseModalClick = () => {
     const modal = document.getElementById('exampleModal');
     if (modal) {
@@ -91,7 +89,7 @@ const AddGalButtonEmploye = () => {
       modal.style.display = 'none';
     }
   };
-
+  }
   const CustomSelect = ({ field, form, options, isMulti }) => (
     <Select
       {...field}
