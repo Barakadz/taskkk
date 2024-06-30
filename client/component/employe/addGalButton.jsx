@@ -54,8 +54,7 @@ const AddGalButtonEmploye = () => {
     const apiUrl = 'https://task.groupe-hasnaoui.com/api/employe@groupe/add';
     const requestData = {
       salaire: values.salaireEm,
-      username: employeAll,
-      trimestre:'trimestre 2'
+      username: employeAll 
 
     };
 
