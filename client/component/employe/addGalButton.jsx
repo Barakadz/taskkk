@@ -82,6 +82,8 @@ resetForm(initialValues); // Reset form fields
       })
     .catch(error => {
      });
+  
+  }
   const handleCloseModalClick = () => {
     const modal = document.getElementById('exampleModal');
     if (modal) {
@@ -89,7 +91,6 @@ resetForm(initialValues); // Reset form fields
       modal.style.display = 'none';
     }
   };
-  }
   const CustomSelect = ({ field, form, options, isMulti }) => (
     <Select
       {...field}
