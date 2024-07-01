@@ -29,10 +29,10 @@ export const GetTacheVal = (req, res) => {
     return res.status(400).json({ message: "Departement is required" });
   }
 
-  const q = "SELECT * FROM tache WHERE departement_user = ? and validation = ? order by id desc";
+  const q = "SELECT * FROM tache WHERE departement_user = ?   order by validation asc";
   
   // Query the database
-  db.query(q, [dep,'en cours'], (err, data) => {
+  db.query(q, [dep ], (err, data) => {
     if (err) {
       console.error("Database query error:", err);
       return res.status(500).json({ error: "Database query error" });

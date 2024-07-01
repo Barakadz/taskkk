@@ -57,7 +57,7 @@ const AdminProjetVall = () => {
     { field: 'date_fin', title: 'Date de Fin' },
     { field: 'mail', title: 'Utilisateur' },
     { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' } },
-    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' } },
+    { field: 'validation_dg', title: 'Validation DGR', cellStyle: { backgroundColor: '#A5D721' } },
   ];
 
   const handleAddUserClick = () => {
@@ -115,6 +115,8 @@ const AdminProjetVall = () => {
             color: '#FFF'
           },
           actionsColumnIndex: -1,
+          pageSize: 100,
+          pageSizeOptions: [10, 20, 50, 100]
         }}
         actions={[
           {

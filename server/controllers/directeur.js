@@ -62,3 +62,32 @@ export const GetDirecteurDep = (req, res) => {
 }
 
  
+
+
+
+
+
+export const GetDirecteurDepByMLail = (req, res) => {
+
+  
+  // Destructure and sanitize the email from the request body
+  const { mail } = req.body;
+  
+  // Check if mail is provided
+  if (!mail) {
+    return res.status(400).json({ message: "Mail is required" });
+  }
+
+  const q = "SELECT departement	 FROM directeur WHERE mail = ?  ";
+  
+  // Query the database
+  db.query(q, [mail], (err, data) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Database query error" });
+    }
+    return res.status(200).json(data);
+  });
+}
+
+ 

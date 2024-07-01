@@ -77,7 +77,7 @@ const AdminProjet = () => {
     },
     { 
       field: 'validation_dg', 
-      title: 'Validation DGA',
+      title: 'Validation DGR',
       render: rowData => (
         <div style={{ backgroundColor: rowData.validation_dg === 'nonvalide' ? 'red' : '#A5D721' }} className='etatprojetdga-step p-2'>
           {rowData.validation_dg}

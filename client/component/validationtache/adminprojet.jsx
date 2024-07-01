@@ -21,48 +21,95 @@ const AdminTacheVal = () => {
      const [equipe, setEquipe] = useState('');
 
 
+     const [departementDirector, setDepartementDirector] = useState([]);
+     const dispatch = useDispatch();
+     const user = useSelector((state) => state.user);
+  
+ 
+
+
+
+
+     const fetchData = async () => {
+      if (!user || !user.department) {
+        console.log('User data is not available yet');
+        return;
+      }
+  //modifier get departement drom bdd
+  
+  //get departement from bdd de  mailtask
+  const requestDataa = {
+    mail: user.mail
+  };
+  
+  try {
+    const response = await axios.post('https://task.groupe-hasnaoui.com/api/directeur/directeurdepartement', requestDataa, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    setDepartementDirector(response.data);
+   } catch (error) {
+    console.log('There was an error!', error);
+  }
+  
+  
+  
+  //envoie tous le departement
+   
+    
+  
+    };
+  
+    useEffect(() => {
+      if (user && user.department) {
+        fetchData();
+      }
+    }, [user]);
+
 
  
- 
-
-
-
-
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
 
   
   const [data, setData] = useState([]);
 
-  const fetchData = async () => {
-    if (!user || !user.department) {
-      console.log('User data is not available yet');
-      return;
-    }
+  
 
-    const requestData = {
-      dep: user.department
-    };
-    
-    try {
-      const response = await axios.post('https://task.groupe-hasnaoui.com/api/tachevalide/projetdep/', requestData, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      setData(response.data);
-    } catch (error) {
-      console.log('There was an error!', error);
-    }
-  };
 
+
+   
   useEffect(() => {
-    if (user && user.department) {
-      fetchData();
-    }
-  }, [user]);
+    const fetchProjectData = async () => {
+      if (departementDirector.length > 0) {
+        const promises = departementDirector.map((director) => {
+          const requestData = {
+            dep: director.departement,
+          };
 
- 
+          return axios.post('https://task.groupe-hasnaoui.com/api/tachevalide/projetdep/', requestData, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }).then(response => response.data)
+            .catch(error => {
+              console.error('There was an error!', error);
+              return null;
+            });
+        });
+
+        try {
+          const results = await Promise.all(promises);
+          const validResults = results.filter(result => result !== null);
+          setData(validResults.flat());
+        } catch (error) {
+          console.error('Error in Promise.all:', error);
+        }
+      }
+    };
+
+    fetchProjectData();
+  }, [departementDirector]);
+
  
 
   const columns = [
@@ -128,6 +175,8 @@ setEquipe(equipe);
             color: '#FFF'
           },
           actionsColumnIndex: -1,
+          pageSize: 100,
+          pageSizeOptions: [10, 20, 50, 100]
         }}
         actions={[
           {
@@ -174,7 +223,7 @@ setEquipe(equipe);
               filterTooltip: 'Filtrer'
             },
             editRow: {
-              deleteText: 'Voulez-vous supprimer ce projet?',
+              deleteText: 'Voulez-vous supprimer ce tache?',
               cancelTooltip: 'Annuler',
               saveTooltip: 'Enregistrer'
             }

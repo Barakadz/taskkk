@@ -16,32 +16,48 @@ const AdminProjetVal = () => {
   const [Participant, setParticipant] = useState('');
   const [IdPro, setIdPro] = useState('');
   const [mailPro, setMailPro] = useState('');
+  const [departementDirector, setDepartementDirector] = useState([]);
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
   const [data, setData] = useState([]);
+  
+
+
+
+
+
 
   const fetchData = async () => {
     if (!user || !user.department) {
       console.log('User data is not available yet');
       return;
     }
+//modifier get departement drom bdd
 
-    const requestData = {
-      dep: user.department
-    };
-    
-    try {
-      const response = await axios.post('https://task.groupe-hasnaoui.com/api/projetvalide/projetdep/', requestData, {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      setData(response.data);
-    } catch (error) {
-      console.log('There was an error!', error);
+//get departement from bdd de  mailtask
+const requestDataa = {
+  mail: user.mail
+};
+
+try {
+  const response = await axios.post('https://task.groupe-hasnaoui.com/api/directeur/directeurdepartement', requestDataa, {
+    headers: {
+      'Content-Type': 'application/json',
     }
+  });
+  setDepartementDirector(response.data);
+ } catch (error) {
+  console.log('There was an error!', error);
+}
+
+
+
+//envoie tous le departement
+ 
+  
+
   };
 
   useEffect(() => {
@@ -49,7 +65,37 @@ const AdminProjetVal = () => {
       fetchData();
     }
   }, [user]);
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      if (departementDirector.length > 0) {
+        const promises = departementDirector.map((director) => {
+          const requestData = {
+            dep: director.departement,
+          };
 
+          return axios.post('https://task.groupe-hasnaoui.com/api/projetvalide/projetdep/', requestData, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }).then(response => response.data)
+            .catch(error => {
+              console.error('There was an error!', error);
+              return null;
+            });
+        });
+
+        try {
+          const results = await Promise.all(promises);
+          const validResults = results.filter(result => result !== null);
+          setData(validResults.flat());
+        } catch (error) {
+          console.error('Error in Promise.all:', error);
+        }
+      }
+    };
+
+    fetchProjectData();
+  }, [departementDirector]);
   const columns = [
     { field: 'id', title: 'id', hidden: true },
     { field: 'titre_projet', title: 'Titre de Projet' },
@@ -57,7 +103,7 @@ const AdminProjetVal = () => {
     { field: 'date_fin', title: 'Date de Fin' },
     { field: 'mail', title: 'Utilisateur' },
     { field: 'validation', title: 'Validation', cellStyle: { backgroundColor: '#D6FA8C' } },
-    { field: 'validation_dg', title: 'Validation DGA', cellStyle: { backgroundColor: '#A5D721' } },
+    { field: 'validation_dg', title: 'Validation DGR', cellStyle: { backgroundColor: '#A5D721' } },
   ];
 
   const handleAddUserClick = () => {
@@ -115,6 +161,9 @@ const AdminProjetVal = () => {
             color: '#FFF'
           },
           actionsColumnIndex: -1,
+          pageSize: 100,
+          pageSizeOptions: [10, 20, 50, 100]
+
         }}
         actions={[
           {
