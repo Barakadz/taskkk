@@ -61,8 +61,8 @@ const AdminTache = () => {
       field: 'validation', 
       title: 'Validation Responsable',
       render: rowData => (
-        <div style={{ backgroundColor: rowData.validation === 'nonvalide' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
-          {rowData.validation}
+        <div style={{ backgroundColor: rowData.validation_dg === 'nonvalide' ? 'red' : '#D6FA8C' }} className='etatprojetresponsable-step p-2'>
+          {rowData.validation_dg}
         </div>
       )
     } 
