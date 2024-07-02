@@ -90,6 +90,9 @@ const AdminPrimeValUserRh = () => {
             color: '#FFF'
           },
           actionsColumnIndex: -1,
+      
+          pageSize: 100,
+          pageSizeOptions: [10, 20, 50, 100]
         }}
         actions={[
           {
