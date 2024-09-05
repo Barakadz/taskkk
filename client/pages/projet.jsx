@@ -103,7 +103,8 @@ export default function Home() {
       </Head>
     <main style={{padding:'0',background:"#f5f5f5"}}>
 <div id="viewport">   <SideBarDashboard/>
-<Tour/>     <AdminProjet/>
+<Tour page="projet" />
+<AdminProjet/>
 </div>
        </main>
     </>

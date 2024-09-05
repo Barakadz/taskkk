@@ -191,8 +191,7 @@ const AdminProjet = () => {
             <p><b>Filiale :</b></p>
             <div dangerouslySetInnerHTML={{ __html: rowData.filiale }} />
             <p><b>Scope :</b></p>
-            <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />
-            
+            <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />   
             <p><b>Scope :</b></p>
             <div dangerouslySetInnerHTML={{ __html: rowData.departement }} />
              <p><b>Chef de projet :</b></p>

@@ -107,8 +107,8 @@ const AddGalButton = () => {
 
   const validationSchema = Yup.object().shape({
     titreProjet: Yup.string().required('Il faut remplir votre Titre de Projet'),
-    dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').min(new Date('2024-04-01'), 'La date de début doit être après le 1er avril 2024').max(new Date('2024-06-30'), 'La date de début doit être avant le 30 juin 2024'),
-    dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début').max(new Date('2024-06-30'), 'La date de fin doit être avant le 30 juin 2024'),
+    dateDebut: Yup.date().required('Il faut remplir Votre Date de début de projet').min(new Date('2024-06-30'), 'La date de début doit être après le 1er Juillet 2024').max(new Date('2024-09-30'), 'La date de début doit être avant le 30 septembre 2024'),
+    dateFin: Yup.date().required('Il faut remplir Votre Date de fin de projet').min(Yup.ref('dateDebut'), 'La date de fin ne peut pas être avant la date de début').max(new Date('2024-09-30'), 'La date de fin doit être avant le 30 septembre 2024'),
     chefProjet: Yup.array().test('unique', 'Vous ne pouvez sélectionner qu\'un seul chef de projet', value => value.length <= 1).min(1, 'Il faut remplir votre Chef de Projet').required('Il faut remplir votre Chef de Projet'),
     direction: Yup.array().min(1, 'Il faut remplir votre Direction de Projet').required('Il faut remplir votre Direction de Projet'),
     filiale: Yup.array().min(1, 'Il faut remplir votre filiale de Projet').required('Il faut remplir votre filiale de Projet'),
@@ -211,14 +211,34 @@ const AddGalButton = () => {
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog modal-xl">
             <div className="modal-content">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="exampleModalLabel">Ajouter Projet</h1>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModalClick}></button>
+              <div className="modal-header " >
+              <div className="d-flex justify-content-between align-items-center">
+  <h1 className="modal-title fs-5 " id="exampleModalLabel" style={{marginRight:'400px'}}>Ajouter Projet</h1>
+  <a className="cssbuttons-io-button" href="https://www.groupe-hasnaoui.com/doc_employe.pdf" download style={{ width: 'fit-content' }} target="_blank" rel="noopener noreferrer">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+    >
+      <path fill="none" d="M0 0h24v24H0z"></path>
+      <path
+        fill="currentColor"
+        d="M1 14.5a6.496 6.496 0 0 1 3.064-5.519 8.001 8.001 0 0 1 15.872 0 6.5 6.5 0 0 1-2.936 12L7 21c-3.356-.274-6-3.078-6-6.5zm15.848 4.487a4.5 4.5 0 0 0 2.03-8.309l-.807-.503-.12-.942a6.001 6.001 0 0 0-11.903 0l-.12.942-.805.503a4.5 4.5 0 0 0 2.029 8.309l.173.013h9.35l.173-.013zM13 12h3l-4 5-4-5h3V8h2v4z"
+      ></path>
+    </svg>
+    <span>Documentation</span>
+  </a>
+</div>
+
+               
+                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModalClick}></button>
               </div>
               <div className="modal-body">
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} validateOnMount>
                   {({ setFieldValue }) => (
                     <Form>
+                 
                       <div className="row">
                         <div className="col-lg-6">
                           <div className="form-group">

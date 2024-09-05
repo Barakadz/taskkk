@@ -21,8 +21,8 @@ const AddGalButton = () => {
    const [optionsPartic, setOptionsPartic] = useState([]);
   const [optionsProjet, setOptionsProjet] = useState([]);
   const [isProjetSelected, setIsProjetSelected] = useState(true);
-const[DateDebutProject,setDateDebutProject]=useState('2024-04-01');
-const[dateFinProject,setDateFinProject]=useState('2024-06-30');
+const[DateDebutProject,setDateDebutProject]=useState('2024-06-30');
+const[dateFinProject,setDateFinProject]=useState('2024-09-30');
 const [mailDirector, setMailDirector] = useState('');
 const[idProject,setIdProject]= useState('');
 const ff=async(see)=>{
@@ -331,11 +331,12 @@ setDateFinProject('2024-06-30')
           <div className="modal-dialog modal-xl">
             <div className="modal-content">
               <div className="modal-header">
+
                 <h1 className="modal-title fs-5" id="exampleModalLabel">Ajouter Tache</h1>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModalClick}></button>
               </div>
               <div className="modal-body">        <h6><b>NB:</b> Date de debut projet :<b style={{color:'red'}}>{DateDebutProject}</b> -  Date de fin projet :<b style={{color:'red'}}>{dateFinProject} </b></h6>
-
+<p>Veuillez inscrire votre nom sur l'affiche des participants pour le calcul de la prime.</p>
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} validateOnMount>
                    {({ setFieldValue,errors,touched }) => (
                     <Form>

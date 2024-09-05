@@ -181,6 +181,23 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
+              <div
+  onClick={() => {
+    localStorage.removeItem('mailtask');
+    localStorage.removeItem('passwordtask');
+  }}
+>
+  <Link legacyBehavior href="/">
+    <li className={router.pathname === '/' ? 'act' : ''}>
+      <div className="flex flex-row">
+        <GrValidate color="white" fontSize={20} className="mr-4" />
+        &nbsp; &nbsp;Déconnexion
+      </div>
+    </li>
+  </Link>
+</div>
+
+
             </>
           )}
         
@@ -203,7 +220,14 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-          
+              <Link legacyBehavior href="/primerhusergsh">
+                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Déconnexion
+                  </div>
+                </li>
+              </Link>
             </>
           )}
 
@@ -239,6 +263,14 @@ const Side = () => {
                   <div className="flex flex-row">
                     <GrValidate color="white" fontSize={20} className="mr-4 problem-step" />
                     &nbsp; &nbsp; Contacter la DSI
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/primerhusergsh">
+                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Déconnexion
                   </div>
                 </li>
               </Link>
@@ -285,6 +317,14 @@ const Side = () => {
                   <div className="flex flex-row">
                     <GrValidate color="white" fontSize={20} className="mr-4" />
                     &nbsp; &nbsp;Prime
+                  </div>
+                </li>
+              </Link>
+              <Link legacyBehavior href="/primerhusergsh">
+                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+                  <div className="flex flex-row">
+                    <GrValidate color="white" fontSize={20} className="mr-4" />
+                    &nbsp; &nbsp;Déconnexion
                   </div>
                 </li>
               </Link>
