@@ -212,8 +212,8 @@ const Side = () => {
                   </div>
                 </li>
               </Link>
-              <Link legacyBehavior href="/primerhusergsh">
-                <li className={router.pathname === '/primerhusergsh' ? 'act' : ''}>
+              <Link legacyBehavior href="/primerhusergsh___hasnaoui">
+                <li className={router.pathname === '/primerhusergsh___hasnaoui' ? 'act' : ''}>
                   <div className="flex flex-row">
                     <GrValidate color="white" fontSize={20} className="mr-4" />
                     &nbsp; &nbsp;Tous les primes du GSH
